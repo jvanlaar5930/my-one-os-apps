@@ -3,6 +3,6 @@
   "slug": "calculator",
   "name": "Calculator",
   "icon": "🧮",
-  "prompt": "Build me a calculator",
-  "updatedAt": "2026-06-18T02:34:38.512Z"
+  "prompt": "A calculator with basic arithmetic and keyboard support.",
+  "updatedAt": "2026-06-18T03:16:44.576Z"
 }
