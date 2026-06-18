@@ -4,5 +4,5 @@
   "name": "Calendar",
   "icon": "📅",
   "prompt": "Let's try again and re-do the application, rework the calendar app. The calendar should have a Month view and Week view (toggleable). A + sign at the bottom on hover to add a new item to the calendar for that day - a modal popup to add the info for the calendar item.",
-  "updatedAt": "2026-06-18T02:41:26.327Z"
+  "updatedAt": "2026-06-18T02:45:34.047Z"
 }
