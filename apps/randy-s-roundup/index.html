@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randy's Roundup</title>
+    <style>
+        :root {
+            --desert-sand: #edc9af;
+            --sky-blue: #87ceeb;
+            --sunset-orange: #ff8c00;
+            --ui-panel: rgba(0, 0, 0, 0.8);
+            --text-color: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 800px;
+            max-height: 450px;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(to bottom, #87ceeb 0%, #fdb813 100%);
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .menu-panel {
+            background: var(--ui-panel);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 3px solid #d2691e;
+            min-width: 280px;
+        }
+
+        h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.5rem;
+            color: #ffcc33;
+            text-shadow: 2px 2px 0 #000;
+            letter-spacing: 2px;
+        }
+
+        .stats-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .controls-hint {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: #d2691e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 4px 0 #8b4513;
+        }
+
+        button:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 #8b4513;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 5;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.7);
+            font-size: 1.1rem;
+        }
+
+        .score-val {
+            color: #ffcc33;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="hud" class="hidden">
+        <div>Score: <span id="hud-score" class="score-val">0</span></div>
+        <div>Coins: <span id="hud-coins" class="score-val">0</span></div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Start Menu -->
+    <div id="start-menu" class="overlay">
+        <div class="menu-panel">
+            <h1>Randy's Roundup</h1>
+            <div class="stats-text">Ready to ride, Cowboy?</div>
+            <div class="controls-hint">
+                <b>Controls:</b><br>
+                SPACE / UP / W: Jump<br>
+                A / D / Left / Right: Move<br>
+                (Avoid cacti & rocks!)
+            </div>
+            <button id="start-btn">START GAME</button>
+        </div>
+    </div>
+
+    <!-- Game Over Summary -->
+    <div id="game-over" class="overlay hidden">
+        <div class="menu-panel">
+            <h1>Wasted!</h1>
+            <div id="summary-content" class="stats-text">
+                <!-- Populated by JS -->
+            </div>
+            <button id="restart-btn">TRY AGAIN</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * Randy's Roundup - Game Engine
+ */
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const startMenu = document.getElementById('start-menu');
+const gameOverMenu = document.getElementById('game-over');
+const startBtn = document.getElementById('start-btn');
+const restartBtn = document.getElementById('restart-btn');
+const hud = document.getElementById('hud');
+const hudScore = document.getElementById('hud-score');
+const hudCoins = document.getElementById('hud-coins');
+const summaryContent = document.getElementById('summary-content');
+
+// Game Constants & State
+const CONFIG = {
+    gravity: 0.6,
+    jumpStrength: -12,
+    baseSpeed: 4,
+    speedIncrement: 0.5,
+    speedThreshold: 100,
+    groundY: 0.85, // % of height
+    playerWidth: 40,
+    playerHeight: 55
+};
+
+let gameState = 'START'; // START, PLAYING, GAMEOVER
+let score = 0;
+let time = 0;
+let coinsCollected = 0;
+let currentSpeed = CONFIG.baseSpeed;
+let highscore = 0;
+let lastTime = 0;
+let spawnTimer = 0;
+let coinTimer = 0;
+
+// OS Bridge Wrapper
+const os = window.os || {
+    storage: {
+        get: async () => { try { return localStorage.getItem('randys_roundup_highscore'); } catch(e) { return null; } },
+        set: async (val) => { try { localStorage.setItem('randys_roundup_highscore', val); } catch(e) {} }
+    },
+    notify: (msg) => { if(window.Notification) new Notification(msg); else alert(msg); }
+};
+
+// Input Handling
+const keys = {};
+window.addEventListener('keydown', e => keys[e.code] = true);
+window.addEventListener('keyup', e => keys[e.code] = false);
+
+class Entity {
+    constructor(x, y, w, h) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
+    get centerX() { return this.x + this.w / 2; }
+    get centerY() { return this.y + this.h / 2; }
+}
+
+class Player extends Entity {
+    constructor() {
+        super(100, 0, CONFIG.playerWidth, CONFIG.playerHeight);
+        this.vy = 0;
+        this.isGrounded = false;
+        this.vx = 0;
+    }
+
+    update(groundY) {
+        // Gravity
+        this.vy += CONFIG.gravity;
+        this.y += this.vy;
+
+        // Ground Collision
+        const groundLevel = canvas.height * CONFIG.groundY - this.h;
+        if (this.y > groundLevel) {
+            this.y = groundLevel;
+            this.vy = 0;
+            this.isGrounded = true;
+        } else {
+            this.isGrounded = false;
+        }
+
+        // Horizontal Movement (Nudging)
+        if (keys['KeyA'] || keys['ArrowLeft']) this.x -= 0.5;
+        if (keys['KeyD'] || keys['ArrowRight']) this.x += 0.5;
+        
+        // Keep in bounds
+        if (this.x < 0) this.x = 0;
+        if (this.x > canvas.width - this.w) this.x = canvas.width - this.w;
+    }
+
+    jump() {
+        if (this.isGrounded) {
+            this.vy = CONFIG.jumpStrength;
+        }
+    }
+
+    draw() {
+        // Draw Body (Cowboy Silhouette/Shape)
+        ctx.fillStyle = '#5d4037'; // Brown pants
+        ctx.fillRect(this.x, this.y + 25, this.w, this.h - 25);
+        
+        ctx.fillStyle = '#3e2723'; // Shirt
+        ctx.fillRect(this.x, this.y + 15, this.w, 15);
+
+        ctx.fillStyle = '#ffccbc'; // Skin
+        ctx.fillRect(this.x + 10, this.y + 5, 20, 15);
+
+        // Hat
+        ctx.fillStyle = '#2b1d0e';
+        ctx.fillRect(this.x - 5, this.y + 5, this.w + 10, 5); // Brim
+        ctx.fillRect(this.x + 10, this.y, 20, 8); // Crown
+    }
+}
+
+class Obstacle extends Entity {
+    constructor(type, speed) {
+        const w = 30 + Math.random() * 20;
+        const h = 40 + Math.random() * 30;
+        super(canvas.width + 100, canvas.height * CONFIG.groundY - h, w, h);
+        this.type = type; // 'cactus' or 'rock'
+        this.speed = speed;
+    }
+
+    update() {
+        this.x -= this.speed;
+    }
+
+    draw() {
+        if (this.type === 'cactus') {
+            ctx.fillStyle = '#2d5a27';
+            ctx.fillRect(this.x, this.y, this.w, this.h);
+            // Cactus arms
+            ctx.fillRect(this.x - 10, this.y + 15, 10, 5);
+            ctx.fillRect(this.x + this.w, this.y + 10, 10, 5);
+            ctx.fillRect(this.x - 10, this.y + 10, 5, 10);
+        } else {
+            ctx.fillStyle = '#708090';
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y + this.h);
+            ctx.lineTo(this.x + this.w/2, this.y);
+            ctx.lineTo(this.x + this.w, this.y + this.h);
+            ctx.fill();
+        }
+    }
+}
+
+class Coin extends Entity {
+    constructor(type, speed) {
+        let r, val;
+        if (type === 'large') { r = 15; val = 10; }
+        else if (type === 'medium') { r = 10; val = 5; }
+        else { r = 7; val = 1; }
+        
+        super(canvas.width + 100, canvas.height * CONFIG.groundY - 120 - Math.random() * 100, r*2, r*2);
+        this.radius = r;
+        this.value = val;
+        this.speed = speed;
+    }
+
+    update() {
+        this.x -= this.speed;
+    }
+
+    draw() {
+        ctx.fillStyle = '#ffd700';
+        ctx.beginPath();
+        ctx.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#b8860b';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Shine
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.beginPath();
+        ctx.arc(this.x + this.radius - 3, this.y + this.radius - 3, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+let player;
+let obstacles = [];
+let coins = [];
+
+function initGame() {
+    player = new Player();
+    obstacles = [];
+    coins = [];
+    score = 0;
+    time = 0;
+    coinsCollected = 0;
+    currentSpeed = CONFIG.baseSpeed;
+    spawnTimer = 0;
+    coinTimer = 0;
+    lastTime = performance.now();
+    
+    hud.classList.remove('hidden');
+    startMenu.classList.add('hidden');
+    gameOverMenu.classList.add('hidden');
+    gameState = 'PLAYING';
+}
+
+function gameOver() {
+    gameState = 'GAMEOVER';
+    hud.classList.add('hidden');
+    gameOverMenu.classList.remove('hidden');
+    
+    const finalScore = Math.floor(time * coinsCollected);
+    summaryContent.innerHTML = `
+        Time: ${Math.floor(time)}s<br>
+        Coins: ${coinsCollected}<br>
+        <strong style="font-size:1.5rem; color:#ffcc33;">Total Score: ${finalScore}</strong>
+    `;
+
+    // Persist High Score
+    highscore.then(hs => {
+        if (finalScore > hs) {
+            highscore.then(val => os.storage.set(val));
+            os.notify("New High Score!");
+        }
+    });
+}
+
+function update(dt) {
+    if (gameState !== 'PLAYING') return;
+
+    time += dt / 1000;
+    
+    // Difficulty scaling
+    // Score is time * coins. Speed increases every 100 points.
+    const currentScore = Math.floor(time * coinsCollected);
+    currentSpeed = CONFIG.baseSpeed + (Math.floor(currentScore / 100) * CONFIG.speedIncrement);
+
+    player.update();
+
+    // Spawning obstacles
+    spawnTimer -= dt;
+    if (spawnTimer <= 0) {
+        const type = Math.random() > 0.7 ? 'rock' : 'cactus';
+        obstacles.push(new Obstacle(type, currentSpeed));
+        spawnTimer = 1000 + Math.random() * 1000 / (currentSpeed/4);
+    }
+
+    // Spawning coins
+    coinTimer -= dt;
+    if (coinTimer <= 0) {
+        const rand = Math.random();
+        let type = 'small';
+        if (rand > 0.95) type = 'large';
+        else if (rand > 0.8) type = 'medium';
+        
+        coins.push(new Coin(type, currentSpeed));
+        coinTimer = 1500 + Math.random() * 2000;
+    }
+
+    // Update Obstacles
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+        obstacles[i].update();
+        
+        // Collision check
+        if (
+            player.x < obstacles[i].x + obstacles[i].w &&
+            player.x + player.w > obstacles[i].x &&
+            player.y < obstacles[i].y + obstacles[i].h &&
+            player.y + player.h > obstacles[i].y
+        ) {
+            gameOver();
+        }
+
+        if (obstacles[i].x + obstacles[i].w < -100) obstacles.splice(i, 1);
+    }
+
+    // Update Coins
+    for (let i = coins.length - 1; i >= 0; i--) {
+        coins[i].update();
+
+        // Collection check
+        const dx = (player.x + player.w/2) - (coins[i].x + coins[i].radius);
+        const dy = (player.y + player.h/2) - (coins[i].y + coins[i].radius);
+        const distance = Math.sqrt(dx*dx + dy*dy);
+
+        if (distance < player.w/2 + coins[i].radius) {
+            coinsCollected += coins[i].value;
+            coins.splice(i, 1);
+            continue;
+        }
+
+        if (coins[i].x + coins[i].w < -100) coins.splice(i, 1);
+    }
+
+    // Update HUD
+    hudScore.innerText = Math.floor(time * coinsCollected);
+    hudCoins.innerText = coinsCollected;
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Background (Parallax-ish)
+    ctx.fillStyle = '#fdb813'; // Sand ground
+    ctx.fillRect(0, canvas.height * CONFIG.groundY, canvas.width, canvas.height);
+
+    // Draw some distant mountains
+    ctx.fillStyle = '#d2691e';
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height * CONFIG.groundY);
+    ctx.lineTo(200, canvas.height * 0.6);
+    ctx.lineTo(400, canvas.height * CONFIG.groundY);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(300, canvas.height * CONFIG.groundY);
+    ctx.lineTo(600, canvas.height * 0.5);
+    ctx.lineTo(800, canvas.height * CONFIG.groundY);
+    ctx.fill();
+
+    // Draw Entities
+    coins.forEach(c => c.draw());
+    obstacles.forEach(o => o.draw());
+    player.draw();
+
+    if (gameState === 'PLAYING') {
+        requestAnimationFrame(gameLoop);
+    }
+}
+
+function gameLoop(now) {
+    const dt = now - lastTime;
+    lastTime = now;
+    update(dt);
+    draw();
+}
+
+// Initialization & Event Listeners
+function setupCanvas() {
+    const container = document.getElementById('game-container');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+}
+
+window.addEventListener('resize', setupCanvas);
+setupCanvas();
+
+startBtn.addEventListener('click', initGame);
+restartBtn.addEventListener('click', initGame);
+
+// Input for Jump
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+        if (gameState === 'PLAYING') {
+            player.jump();
+        } else if (gameState === 'START') {
+            initGame();
+        }
+    }
+});
+
+// Initial Draw
+draw();
+
+// Load Highscore
+highscore.then(val => {
+    console.log("Highscore loaded:", val);
+});
+
+</script>
+</body>
+</html>
