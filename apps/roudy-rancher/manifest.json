@@ -1,0 +1,8 @@
+{
+  "oneOS": true,
+  "slug": "roudy-rancher",
+  "name": "Roudy Rancher",
+  "icon": "🤠",
+  "prompt": "build me an endless platformer game where you need to jump over items. The goal of the game is to see how long you can stay alive. If you hit something you get a `Game Over` screen with your score and your time. You can collect coins as well, and the more time and coins you have = Score. There are 3 differnet coisn you can get, the further you progress you can find very rare Large coins which equal 10, medium rarity which equal 5, and common equal 1. Your score is just Time * Coin amount. The character should look like a cowboy. The name of the game should be called Roudy the Rancher.",
+  "updatedAt": "2026-06-18T04:49:09.926Z"
+}
