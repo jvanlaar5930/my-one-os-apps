@@ -3,6 +3,6 @@
   "slug": "calendar",
   "name": "Calendar",
   "icon": "📅",
-  "prompt": "build me a calendar",
-  "updatedAt": "2026-06-18T02:34:36.008Z"
+  "prompt": "Let's try again and re-do the application, rework the calendar app. The calendar should have a Month view and Week view (toggleable). A + sign at the bottom on hover to add a new item to the calendar for that day - a modal popup to add the info for the calendar item.",
+  "updatedAt": "2026-06-18T02:41:26.327Z"
 }
