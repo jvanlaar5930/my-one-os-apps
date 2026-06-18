@@ -213,6 +213,9 @@
     <div class="container">
         <div class="sidebar">
             <h3>Files</h3>
+            <button class="btn" id="browseBtn">
+                <span>📁</span> Browse Files
+            </button>
             <div class="file-list" id="fileList"></div>
         </div>
         
@@ -275,6 +278,7 @@
         const imageDisplay = document.createElement('img');
         const metadataElement = document.getElementById('metadata');
         const emptyState = document.getElementById('emptyState');
+        const browseBtn = document.getElementById('browseBtn');
         
         // Toolbar buttons
         const rotateLeftBtn = document.getElementById('rotateLeftBtn');
@@ -461,6 +465,17 @@
         
         // Setup event listeners
         function setupEventListeners() {
+            // Browse button
+            browseBtn.addEventListener('click', async () => {
+                try {
+                    // In a real OS, this would open a file browser
+                    // For now, we'll just reload the files to simulate browsing
+                    await loadImages();
+                } catch (error) {
+                    console.error('Error browsing files:', error);
+                }
+            });
+            
             // Toolbar buttons
             rotateLeftBtn.addEventListener('click', () => {
                 rotation = (rotation - 90) % 360;
