@@ -508,12 +508,14 @@
         // Load events from storage
         function loadEvents() {
             if (window.os) {
-                const storedEvents = os.storage.getItem('calendar_events');
-                if (storedEvents) {
-                    events = JSON.parse(storedEvents);
-                } else {
-                    events = [];
-                }
+                os.storage.get('calendar_events').then(storedEvents => {
+                    if (storedEvents) {
+                        events = JSON.parse(storedEvents);
+                    } else {
+                        events = [];
+                    }
+                    renderCalendar();
+                });
             } else {
                 // Fallback for testing outside OS
                 const storedEvents = localStorage.getItem('calendar_events');
@@ -522,13 +524,14 @@
                 } else {
                     events = [];
                 }
+                renderCalendar();
             }
         }
         
         // Save events to storage
         function saveEvents() {
             if (window.os) {
-                os.storage.setItem('calendar_events', JSON.stringify(events));
+                os.storage.set('calendar_events', JSON.stringify(events));
             } else {
                 localStorage.setItem('calendar_events', JSON.stringify(events));
             }
@@ -625,6 +628,7 @@
                     // Update modal date field
                     const dateString = selectedDate.toISOString().split('T')[0];
                     eventDateInput.value = dateString;
+                    showAddEventModal();
                 });
                 
                 monthViewContent.appendChild(dayElement);
@@ -703,6 +707,7 @@
                     // Update modal date field
                     const dateString = selectedDate.toISOString().split('T')[0];
                     eventDateInput.value = dateString;
+                    showAddEventModal();
                 });
                 
                 weekViewContent.appendChild(dayElement);
