@@ -43,6 +43,67 @@ body {
     gap: 15px;
 }
 
+#start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+#start-screen h1 {
+    font-size: 48px;
+    color: #FFD700;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+#start-screen p {
+    font-size: 24px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+#start-btn {
+    margin-top: 30px;
+    padding: 15px 30px;
+    font-size: 20px;
+    background: #FFD700;
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+#start-btn:hover {
+    background: #FFA500;
+    transform: scale(1.05);
+}
+
+#pause-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    padding: 8px 15px;
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
+
 #game-over {
     position: absolute;
     top: 0;
@@ -143,18 +204,22 @@ body {
     border-top: 30px solid #8B4513;
 }
 
-</style></head><body><div id="game-container"><canvas id="game-canvas" width="800" height="500"></canvas><div id="hud"><div>Coins: <span id="coins">0</span></div><div>Time: <span id="time">0</span>s</div><div>Score: <span id="score">0</span></div></div><div id="game-over"><h1>GAME OVER</h1><p>Your Score: <span id="final-score">0</span></p><p>Time Survived: <span id="final-time">0</span>s</p><p>Coins Collected: <span id="final-coins">0</span></p><button id="restart-btn">PLAY AGAIN</button></div></div><script>let canvas = document.getElementById('game-canvas');
+</style></head><body><div id="game-container"><canvas id="game-canvas" width="800" height="500"></canvas><div id="hud"><div>Coins: <span id="coins">0</span></div><div>Time: <span id="time">0</span>s</div><div>Score: <span id="score">0</span></div></div><button id="pause-btn">⏸️ Pause</button><div id="start-screen"><h1>Roudy the Rancher</h1><p>Press Enter to Start</p><p>Space or Up Arrow to Jump</p><button id="start-btn">START GAME</button></div><div id="game-over"><h1>GAME OVER</h1><p>Your Score: <span id="final-score">0</span></p><p>Time Survived: <span id="final-time">0</span>s</p><p>Coins Collected: <span id="final-coins">0</span></p><button id="restart-btn">PLAY AGAIN</button></div></div><script>let canvas = document.getElementById('game-canvas');
 let ctx = canvas.getContext('2d');
 let coinsElement = document.getElementById('coins');
 let timeElement = document.getElementById('time');
 let scoreElement = document.getElementById('score');
+let startScreen = document.getElementById('start-screen');
 let gameOverScreen = document.getElementById('game-over');
 let finalScoreElement = document.getElementById('final-score');
 let finalTimeElement = document.getElementById('final-time');
 let finalCoinsElement = document.getElementById('final-coins');
+let startBtn = document.getElementById('start-btn');
 let restartBtn = document.getElementById('restart-btn');
+let pauseBtn = document.getElementById('pause-btn');
 
 let gameRunning = false;
+let gamePaused = false;
 let score = 0;
 let time = 0;
 let coins = 0;
@@ -186,7 +251,12 @@ function init() {
     loadHighScore();
     
     document.addEventListener('keydown', handleKeyPress);
+    startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', startGame);
+    pauseBtn.addEventListener('click', togglePause);
+    
+    // Show start screen initially
+    startScreen.style.display = 'flex';
     
     requestAnimationFrame(gameLoop);
 }
@@ -216,6 +286,9 @@ async function saveHighScore() {
 
 function startGame() {
     gameRunning = true;
+    gamePaused = false;
+    pauseBtn.textContent = '⏸️ Pause';
+    
     score = 0;
     time = 0;
     coins = 0;
@@ -229,6 +302,7 @@ function startGame() {
     player.velocityY = 0;
     player.isJumping = false;
     
+    startScreen.style.display = 'none';
     gameOverScreen.style.display = 'none';
     
     platforms.push({x: 0, y: 400, width: 800, height: 100});
@@ -238,15 +312,26 @@ function startGame() {
     updateHUD();
 }
 
-function handleKeyPress(e) {
+function togglePause() {
     if (!gameRunning) return;
     
-    if (e.code === 'Space' || e.key === 'ArrowUp') {
+    gamePaused = !gamePaused;
+    pauseBtn.textContent = gamePaused ? '▶️ Resume' : '⏸️ Pause';
+}
+
+function handleKeyPress(e) {
+    if (e.code === 'Enter') {
+        if (!gameRunning) {
+            startGame();
+        }
+    } else if (e.code === 'Space' || e.key === 'ArrowUp') {
         e.preventDefault();
-        if (!player.isJumping) {
+        if (!player.isJumping && gameRunning && !gamePaused) {
             player.velocityY = -player.jumpPower;
             player.isJumping = true;
         }
+    } else if (e.key === 'p' || e.key === 'P') {
+        togglePause();
     }
 }
 
@@ -320,7 +405,7 @@ function createCoin() {
 }
 
 function update(deltaTime) {
-    if (!gameRunning) return;
+    if (!gameRunning || gamePaused) return;
     
     time += deltaTime;
     score = Math.floor(time * coins);
