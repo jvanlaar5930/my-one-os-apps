@@ -1,0 +1,8 @@
+{
+  "oneOS": true,
+  "slug": "trash",
+  "name": "Trash",
+  "icon": "🗑️",
+  "prompt": "A trash bin that lists deleted files and can restore them or empty the trash.",
+  "updatedAt": "2026-06-18T03:16:56.961Z"
+}
