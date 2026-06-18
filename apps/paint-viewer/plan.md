@@ -1,0 +1,13 @@
+- A simple image gallery app that displays PNG and JPG files created with Windows Paint.
+- Features:
+  - File browser to select and load Paint-generated images from local storage
+  - Image preview with zoom and pan functionality
+  - Navigation controls to move between loaded images
+  - File metadata display (filename, size, dimensions)
+  - Save current image as new file with modified settings
+  - Basic image rotation and flip tools
+- Bridge & data:
+  - Uses os.storage.list() and os.storage.read() to access image files
+  - Uses os.fs.write() to save modified images
+  - Stores image metadata in os.storage under keys "image_cache" and "recent_files"
+- Layout: Single column interface with file browser sidebar, main image display area, and toolbar controls at bottom
