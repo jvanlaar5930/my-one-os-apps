@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --text-light: #6c757d;
+        }
+
+        [data-theme="dark"] {
+            --primary: #4895ef;
+            --secondary: #4895ef;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --light: #212529;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --border: #495057;
+            --card-bg: #343a40;
+            --text: #f8f9fa;
+            --text-light: #adb5bd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--border);
+        }
+
+        .current-date {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-top: 8px;
+        }
+
+        .day-header {
+            text-align: center;
+            padding: 8px 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .calendar-day {
+            min-height: 80px;
+            padding: 8px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .calendar-day.today {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .calendar-day.empty {
+            background-color: transparent;
+            cursor: default;
+        }
+
+        .day-number {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .events-count {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .event-indicator {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+
+        .event-list {
+            margin-top: 16px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            padding: 8px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-item:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .event-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            min-width: 50px;
+        }
+
+        .event-title {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .event-category {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 8px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .view-btn {
+            flex: 1;
+            padding: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .event-detail {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            background-color: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .event-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .event-title-display {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .event-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .event-category-display {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--text-light);
+        }
+
+        .empty-state p {
+            margin-top: 8px;
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-btn {
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 4px;
+            }
+            
+            .day-number {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="calendar-header">
+                <button class="nav-btn" id="prev-month">&lt;</button>
+                <div class="current-date" id="current-month-year">June 2023</div>
+                <button class="nav-btn" id="next-month">&gt;</button>
+            </div>
+            
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Calendar grid will be generated here -->
+            </div>
+            
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="month">Month</button>
+                <button class="view-btn" data-view="day">Day</button>
+            </div>
+            
+            <div class="category-filter" id="category-filter">
+                <!-- Category filters will be generated here -->
+            </div>
+            
+            <div class="event-list" id="event-list">
+                <!-- Events list will be generated here -->
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="calendar-header">
+                <button class="nav-btn" id="prev-day">&lt;</button>
+                <div class="current-date" id="current-day">Monday, June 12, 2023</div>
+                <button class="nav-btn" id="next-day">&gt;</button>
+            </div>
+            
+            <div class="event-detail">
+                <div id="event-detail-content">
+                    <div class="empty-state">
+                        <div>📅</div>
+                        <p>Select an event to view details</p>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-outline" id="add-event">Add Event</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        const state = {
+            currentDate: new Date(),
+            selectedDate: new Date(),
+            view: 'month', // 'month' or 'day'
+            events: [],
+            categories: [
+                { id: 'work', name: 'Work', color: '#4361ee' },
+                { id: 'personal', name: 'Personal', color: '#f72585' },
+                { id: 'family', name: 'Family', color: '#4cc9f0' },
+                { id: 'health', name: 'Health', color: '#7209b7' }
+            ],
+            selectedCategory: null
+        };
+
+        // DOM Elements
+        const elements = {
+            prevMonth: document.getElementById('prev-month'),
+            nextMonth: document.getElementById('next-month'),
+            currentMonthYear: document.getElementById('current-month-year'),
+            calendarGrid: document.getElementById('calendar-grid'),
+            prevDay: document.getElementById('prev-day'),
+            nextDay: document.getElementById('next-day'),
+            currentDay: document.getElementById('current-day'),
+            eventList: document.getElementById('event-list'),
+            eventDetailContent: document.getElementById('event-detail-content'),
+            addEventBtn: document.getElementById('add-event'),
+            viewButtons: document.querySelectorAll('.view-btn'),
+            categoryFilter: document.getElementById('category-filter')
+        };
+
+        // Initialize the app
+        async function init() {
+            if (window.os) {
+                await loadEvents();
+                setupEventListeners();
+                renderCalendar();
+                renderEventList();
+                updateCurrentDayDisplay();
+                setupCategoryFilter();
+            } else {
+                // Fallback for testing outside OS
+                state.events = [
+                    {
+                        id: '1',
+                        title: 'Team Meeting',
+                        date: new Date(2023, 5, 12),
+                        time: '10:00',
+                        description: 'Weekly team sync',
+                        category: 'work',
+                        recurring: null
+                    },
+                    {
+                        id: '2',
+                        title: 'Dentist Appointment',
+                        date: new Date(2023, 5, 14),
+                        time: '14:30',
+                        description: 'Regular checkup',
+                        category: 'health',
+                        recurring: null
+                    }
+                ];
+                renderCalendar();
+                renderEventList();
+                updateCurrentDayDisplay();
+            }
+        }
+
+        // Load events from storage
+        async function loadEvents() {
+            try {
+                const storedEvents = await os.storage.get('calendar_events');
+                if (storedEvents) {
+                    state.events = JSON.parse(storedEvents).map(event => ({
+                        ...event,
+                        date: new Date(event.date)
+                    }));
+                }
+            } catch (error) {
+                console.error('Error loading events:', error);
+            }
+        }
+
+        // Save events to storage
+        async function saveEvents() {
+            try {
+                await os.storage.set('calendar_events', JSON.stringify(state.events));
+            } catch (error) {
+                console.error('Error saving events:', error);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            elements.prevMonth.addEventListener('click', () => {
+                state.currentDate.setMonth(state.currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+
+            elements.nextMonth.addEventListener('click', () => {
+                state.currentDate.setMonth(state.currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+
+            elements.prevDay.addEventListener('click', () => {
+                state.selectedDate.setDate(state.selectedDate.getDate() - 1);
+                updateCurrentDayDisplay();
+                renderEventList();
+            });
+
+            elements.nextDay.addEventListener('click', () => {
+                state.selectedDate.setDate(state.selectedDate.getDate() + 1);
+                updateCurrentDayDisplay();
+                renderEventList();
+            });
+
+            elements.addEventBtn.addEventListener('click', () => {
+                showEventForm(null);
+            });
+
+            elements.viewButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    elements.viewButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.view = btn.dataset.view;
+                    renderCalendar();
+                });
+            });
+
+            // Click outside to close event detail
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.event-detail') && !e.target.closest('.event-item')) {
+                    elements.eventDetailContent.innerHTML = `
+                        <div class="empty-state">
+                            <div>📅</div>
+                            <p>Select an event to view details</p>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Setup category filter
+        function setupCategoryFilter() {
+            elements.categoryFilter.innerHTML = '';
+            const allBtn = document.createElement('button');
+            allBtn.className = 'filter-btn active';
+            allBtn.textContent = 'All';
+            allBtn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                allBtn.classList.add('active');
+                state.selectedCategory = null;
+                renderEventList();
+            });
+            elements.categoryFilter.appendChild(allBtn);
+
+            state.categories.forEach(category => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = category.name;
+                btn.style.borderColor = category.color;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.selectedCategory = category.id;
+                    renderEventList();
+                });
+                elements.categoryFilter.appendChild(btn);
+            });
+        }
+
+        // Render calendar grid
+        function renderCalendar() {
+            const year = state.currentDate.getFullYear();
+            const month = state.currentDate.getMonth();
+            
+            elements.currentMonthYear.textContent = state.currentDate.toLocaleDateString('en-US', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
+
+            // Clear existing grid
+            elements.calendarGrid.innerHTML = '';
+            
+            // Add day headers
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            days.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = day;
+                elements.calendarGrid.appendChild(header);
+            });
+
+            // Get first day of month and total days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Add empty cells for days before the first day
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day empty';
+                elements.calendarGrid.appendChild(emptyCell);
+            }
+
+            // Add cells for each day of the month
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day';
+                cell.innerHTML = `
+                    <div class="day-number">${day}</div>
+                    <div class="events-count">0</div>
+                `;
+                
+                // Mark today
+                if (date.toDateString() === today.toDateString()) {
+                    cell.classList.add('today');
+                }
+                
+                // Add event indicators
+                const dayEvents = getEventsForDate(date);
+                if (dayEvents.length > 0) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'event-indicator';
+                    indicator.style.backgroundColor = state.categories.find(c => c.id === dayEvents[0].category)?.color || '#4361ee';
+                    cell.appendChild(indicator);
+                }
+                
+                // Add click event
+                cell.addEventListener('click', () => {
+                    state.selectedDate = date;
+                    updateCurrentDayDisplay();
+                    renderEventList();
+                    elements.calendarGrid.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+                    cell.classList.add('selected');
+                });
+                
+                elements.calendarGrid.appendChild(cell);
+            }
+        }
+
+        // Update current day display
+        function updateCurrentDayDisplay() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            elements.currentDay.textContent = state.selectedDate.toLocaleDateString('en-US', options);
+        }
+
+        // Get events for a specific date
+        function getEventsForDate(date) {
+            return state.events.filter(event => {
+                const eventDate = new Date(event.date);
+                const isSameDate = eventDate.toDateString() === date.toDateString();
+                
+                if (isSameDate) return true;
+                
+                // Check for recurring events
+                if (event.recurring) {
+                    const today = new Date(date);
+                    switch (event.recurring) {
+                        case 'daily':
+                            return true;
+                        case 'weekly':
+                            return today.getDay() === eventDate.getDay();
+                        case 'monthly':
+                            return today.getDate() === eventDate.getDate();
+                        case 'yearly':
+                            return today.getMonth() === eventDate.getMonth() && 
+                                   today.getDate() === eventDate.getDate();
+                    }
+                }
+                
+                return false;
+            });
+        }
+
+        // Render event list for selected day
+        function renderEventList() {
+            const events = getEventsForDate(state.selectedDate);
+            
+            if (state.selectedCategory) {
+                const categoryEvents = events.filter(event => event.category === state.selectedCategory);
+                renderEvents(categoryEvents);
+            } else {
+                renderEvents(events);
+            }
+        }
+
+        // Render events in list
+        function renderEvents(events) {
+            elements.eventList.innerHTML = '';
+            
+            if (events.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.innerHTML = `
+                    <div>📅</div>
+                    <p>No events for this day</p>
+                `;
+                elements.eventList.appendChild(emptyState);
+                return;
+            }
+            
+            events.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+                eventItem.dataset.id = event.id;
+                
+                const category = state.categories.find(c => c.id === event.category);
+                eventItem.innerHTML = `
+                    <div class="event-category" style="background-color: ${category?.color || '#4361ee'}"></div>
+                    <div class="event-time">${event.time}</div>
+                    <div class="event-title">${event.title}</div>
+                `;
+                
+                eventItem.addEventListener('click', () => {
+                    showEventDetails(event);
+                });
+                
+                elements.eventList.appendChild(eventItem);
+            });
+        }
+
+        // Show event details
+        function showEventDetails(event) {
+            const category = state.categories.find(c => c.id === event.category);
+            
+            elements.eventDetailContent.innerHTML = `
+                <div class="event-title-display">${event.title}</div>
+                <div class="event-meta">
+                    <span>${event.time}</span>
+                    <span class="event-category-display" style="background-color: ${category?.color || '#4361ee'}"></span>
+                    <span>${category?.name || event.category}</span>
+                </div>
+                <div class="event-description">${event.description}</div>
+                <div class="event-actions">
+                    <button class="btn btn-outline" onclick="editEvent('${event.id}')">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteEvent('${event.id}')">Delete</button>
+                </div>
+            `;
+        }
+
+        // Show event form
+        function showEventForm(eventId) {
+            const event = eventId ? state.events.find(e => e.id === eventId) : null;
+            const title = event ? 'Edit Event' : 'Add New Event';
+            
+            elements.eventDetailContent.innerHTML = `
+                <form class="event-form" id="event-form">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-control" id="event-title" value="${event?.title || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" class="form-control" id="event-date" value="${event?.date ? event.date.toISOString().split('T')[0] : state.selectedDate.toISOString().split('T')[0]}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="time" class="form-control" id="event-time" value="${event?.time || '09:00'}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" id="event-description" rows="3">${event?.description || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select class="form-control" id="event-category" required>
+                            ${state.categories.map(cat => 
+                                `<option value="${cat.id}" ${event?.category === cat.id ? 'selected' : ''}>${cat.name}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Recurring</label>
+                        <select class="form-control" id="event-recurring">
+                            <option value="">None</option>
+                            <option value="daily" ${event?.recurring === 'daily' ? 'selected' : ''}>Daily</option>
+                            <option value="weekly" ${event?.recurring === 'weekly' ? 'selected' : ''}>Weekly</option>
+                            <option value="monthly" ${event?.recurring === 'monthly' ? 'selected' : ''}>Monthly</option>
+                            <option value="yearly" ${event?.recurring === 'yearly' ? 'selected' : ''}>Yearly</option>
+                        </select>
+                    </div>
+                    <div class="actions">
+                        <button type="button" class="btn btn-outline" onclick="cancelEvent()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">${event ? 'Update' : 'Add'} Event</button>
+                    </div>
+                </form>
+            `;
+            
+            document.getElementById('event-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (event) {
+                    updateEvent(eventId);
+                } else {
+                    createEvent();
+                }
+            });
+        }
+
+        // Create new event
+        async function createEvent() {
+            const title = document.getElementById('event-title').value;
+            const date = new Date(document.getElementById('event-date').value);
+            const time = document.getElementById('event-time').value;
+            const description = document.getElementById('event-description').value;
+            const category = document.getElementById('event-category').value;
+            const recurring = document.getElementById('event-recurring').value || null;
+            
+            if (!title || !date || !time) return;
+            
+            const event = {
+                id: Date.now().toString(),
+                title,
+                date,
+                time,
+                description,
+                category,
+                recurring
+            };
+            
+            state.events.push(event);
+            await saveEvents();
+            renderCalendar();
+            renderEventList();
+            
+            elements.eventDetailContent.innerHTML = `
+                <div class="empty-state">
+                    <div>📅</div>
+                    <p>Event created successfully!</p>
+                </div>
+            `;
+        }
+
+        // Update existing event
+        async function updateEvent(eventId) {
+            const index = state.events.findIndex(e => e.id === eventId);
+            if (index === -1) return;
+            
+            const title = document.getElementById('event-title').value;
+            const date = new Date(document.getElementById('event-date').value);
+            const time = document.getElementById('event-time').value;
+            const description = document.getElementById('event-description').value;
+            const category = document.getElementById('event-category').value;
+            const recurring = document.getElementById('event-recurring').value || null;
+            
+            if (!title || !date || !time) return;
+            
+            state.events[index] = {
+                ...state.events[index],
+                title,
+                date,
+                time,
+                description,
+                category,
+                recurring
+            };
+            
+            await saveEvents();
+            renderCalendar();
+            renderEventList();
+            
+            elements.eventDetailContent.innerHTML = `
+                <div class="empty-state">
+                    <div>📅</div>
+                    <p>Event updated successfully!</p>
+                </div>
+            `;
+        }
+
+        // Delete event
+        async function deleteEvent(eventId) {
+            if (!confirm('Are you sure you want to delete this event?')) return;
+            
+            state.events = state.events.filter(e => e.id !== eventId);
+            await saveEvents();
+            renderCalendar();
+            renderEventList();
+            
+            elements.eventDetailContent.innerHTML = `
+                <div class="empty-state">
+                    <div>📅</div>
+                    <p>Event deleted successfully!</p>
+                </div>
+            `;
+        }
+
+        // Cancel event form
+        function cancelEvent() {
+            renderEventList();
+        }
+
+        // Edit event
+        function editEvent(eventId) {
+            showEventForm(eventId);
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
