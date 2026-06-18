@@ -1,10 +1,1 @@
-- A calendar application with toggleable month/week views and interactive event creation.
-- Features:
-  - Month view and week view toggle with visual switcher
-  - Hover + button at bottom to trigger new event creation
-  - Modal popup form for adding event details (title, time, description)
-  - Current date highlighting in both views
-  - Event rendering with color coding and time indicators
-  - View navigation controls (previous/next buttons)
-- Bridge & data: os.storage.* for persisting events, os.window.* for modal positioning
-- Layout: Top toolbar with view toggle and navigation, main calendar grid area, floating + button in bottom right corner
+_No plan recorded._
