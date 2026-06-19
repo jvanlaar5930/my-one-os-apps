@@ -1,3 +1,4 @@
+<!--APP {"name":"CSV Editor","icon":"📊"}-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -622,7 +623,7 @@ function newCSV(){
 
 function openCSV(){
   var fileInput = document.getElementById('fileInput');
-  if(window.os){
+  if(window.os && os.fs && typeof os.fs.openFile === 'function'){
     os.fs.openFile('csv').then(function(result){
       if(result && result.content){
         var data = parseCSV(result.content);
@@ -630,7 +631,7 @@ function openCSV(){
         if(result.name) notify('Opened: '+result.name);
       }
     }).catch(function(e){
-      notify('Error opening file: '+e.message);
+      fileInput.click();
     });
   } else {
     fileInput.onchange = function(e){
