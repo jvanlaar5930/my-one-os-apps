@@ -1,0 +1,9 @@
+{
+  "oneOS": true,
+  "contentId": "23ed594f80aeb660",
+  "slug": "23ed594f80aeb660",
+  "name": "Calendar",
+  "icon": "📅",
+  "prompt": "A calendar with month and week views, per-day events added via a hover + on each day, and a light/dark theme toggle.",
+  "updatedAt": "2026-06-19T13:49:33.695Z"
+}
