@@ -1,0 +1,9 @@
+{
+  "oneOS": true,
+  "contentId": "18871a62bc606ddd",
+  "slug": "18871a62bc606ddd",
+  "name": "Paint",
+  "icon": "🎨",
+  "prompt": "A paint app with color, brush size, eraser, clear, and save to the filesystem.",
+  "updatedAt": "2026-06-19T13:49:41.576Z"
+}
