@@ -5,6 +5,6 @@
   "name": "CSV Editor",
   "icon": "📊",
   "prompt": "Create me an excel like application to manage data. I want it only to deal with CSV formats. I should be able to open the CSV file, save/save as the csv file, and create new CSV. \n\nOpening existing CSV allows for quickly adding a Header row (or quickly removing). I should be able to modify each data item in a editable cell (just like excel). I should be able to highlight 1 or many cells. I should be able to click to drag to highlight a block of cells. There should be formatting options. I should be able to do rudimentary calculations - for example Row 2:A + Row 2:B = Row 2:C. I should be able to highlight cells and change their colors. I should be able to format highlighted cells to have built in formatting. \n\nThis program should have direct access to you, allowing for direct manipulation of the CSV data and modifications.",
-  "lastChange": "I'm getting the following error when trying to Open - [one_OS] os.fs.openFile() is not available in this OS",
-  "updatedAt": "2026-06-19T15:52:50.114Z"
+  "lastChange": "This is still preventing Open/Save functionality [one_OS] os.fs.openFile() is not available in this OS (anonymous) @ VM199 about:srcdoc:30 openCSV",
+  "updatedAt": "2026-06-19T17:52:52.237Z"
 }
