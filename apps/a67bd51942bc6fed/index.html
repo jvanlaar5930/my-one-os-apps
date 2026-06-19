@@ -200,6 +200,7 @@ function saveState(){
 
 // ── CSV Parser ──
 function parseCSV(str){
+  if (!str) return [];
   var rows = [], row = [], cell = '', inQuotes = false, i = 0;
   while(i < str.length){
     var ch = str[i];
