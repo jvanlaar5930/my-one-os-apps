@@ -58,7 +58,8 @@
   // Storage helper (supports os.storage if available, falls back to localStorage)
   const storage = (typeof os !== 'undefined' && os.storage) ? os.storage : localStorage;
   
-  let highScore = parseFloat(storage.getItem('rr_highscore') || '0');
+  let rawScore = storage.getItem('rr_highscore');
+  let highScore = parseFloat(rawScore) || 0;
 
   // Game State
   let gameState = 'menu'; 
