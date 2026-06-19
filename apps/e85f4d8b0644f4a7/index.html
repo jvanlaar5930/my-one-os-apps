@@ -149,7 +149,7 @@
 
     // Score & Speed progression
     score += speed * 0.08;
-    const newSpeed = baseSpeed + Math.floor(score / 100);
+    const newSpeed = baseSpeed + Math.floor(score / 200);
     if (newSpeed > speed) speed = newSpeed;
 
     elapsedTime = (Date.now() - startTime) / 1000;
