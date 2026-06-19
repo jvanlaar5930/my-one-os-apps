@@ -623,50 +623,30 @@ function newCSV(){
 
 function openCSV(){
   var fileInput = document.getElementById('fileInput');
-  if(window.os && os.fs && typeof os.fs.openFile === 'function'){
-    os.fs.openFile('csv').then(function(result){
-      if(result && result.content){
-        var data = parseCSV(result.content);
-        loadData(data);
-        if(result.name) notify('Opened: '+result.name);
-      }
-    }).catch(function(e){
-      fileInput.click();
-    });
-  } else {
-    fileInput.onchange = function(e){
-      var file = e.target.files[0];
-      if(!file) return;
-      var reader = new FileReader();
-      reader.onload = function(ev){
-        var data = parseCSV(ev.target.result);
-        loadData(data);
-        notify('Opened: '+file.name);
-      };
-      reader.readAsText(file);
-      fileInput.value = '';
+  fileInput.onchange = function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var data = parseCSV(ev.target.result);
+      loadData(data);
+      notify('Opened: '+file.name);
     };
-    fileInput.click();
-  }
+    reader.readAsText(file);
+    fileInput.value = '';
+  };
+  fileInput.click();
 }
 
 function saveCSV(){
-  if(window.os){
-    os.fs.saveFile('csv').then(function(result){
-      if(result) notify('Saved successfully');
-    }).catch(function(e){
-      notify('Error saving: '+e.message);
-    });
-  } else {
-    var csv = toCSV(grid);
-    var blob = new Blob([csv], {type:'text/csv'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'spreadsheet.csv';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    notify('Saved successfully');
-  }
+  var csv = toCSV(grid);
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'spreadsheet.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  notify('Saved successfully');
 }
 
 function saveAsCSV(){
