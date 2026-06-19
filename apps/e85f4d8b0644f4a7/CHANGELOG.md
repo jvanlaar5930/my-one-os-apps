@@ -1,6 +1,7 @@
 # Randy's Roundup — Changelog
 
 ## Changelog
+- 2026-06-19 — Fix `Best Score: NaN` on the `Game Over` screen
 - 2026-06-19 — Lets space the speed up by ever 200 points
 - 2026-06-19 — Revert the latest commits to `index.html` for this app
 - 2026-06-19 — I think it went the opposite direction. The player now jumps VERY fast, and not high enough to jump over. I'd rather give more room to jump. When the stage gets to say - 60s, objects should be close together so the player needs to jump over 2.
