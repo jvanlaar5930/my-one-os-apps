@@ -1,8 +1,0 @@
-{
-  "oneOS": true,
-  "slug": "clock",
-  "name": "Clock",
-  "icon": "⏰",
-  "prompt": "A clock app with a live clock, stopwatch, and countdown timer.",
-  "updatedAt": "2026-06-18T03:30:58.807Z"
-}

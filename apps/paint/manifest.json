@@ -1,8 +1,0 @@
-{
-  "oneOS": true,
-  "slug": "paint",
-  "name": "Paint",
-  "icon": "🎨",
-  "prompt": "A paint app with color, brush size, eraser, clear, and save to the filesystem.",
-  "updatedAt": "2026-06-18T03:30:56.432Z"
-}

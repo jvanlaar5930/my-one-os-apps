@@ -1,8 +1,0 @@
-{
-  "oneOS": true,
-  "slug": "calculator",
-  "name": "Calculator",
-  "icon": "🧮",
-  "prompt": "A calculator with basic arithmetic and keyboard support.",
-  "updatedAt": "2026-06-18T03:30:49.491Z"
-}

@@ -1,8 +1,0 @@
-{
-  "oneOS": true,
-  "slug": "notes",
-  "name": "Notes",
-  "icon": "📝",
-  "prompt": "A notes app with a list of notes and an editor, autosaved.",
-  "updatedAt": "2026-06-18T03:30:54.193Z"
-}

@@ -1,8 +1,0 @@
-{
-  "oneOS": true,
-  "slug": "calendar",
-  "name": "Calendar",
-  "icon": "📅",
-  "prompt": "A calendar with month and week views, per-day events added via a hover + on each day, and a light/dark theme toggle.",
-  "updatedAt": "2026-06-18T03:30:51.911Z"
-}
