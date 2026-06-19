@@ -1,6 +1,7 @@
 # CSV Editor — Changelog
 
 ## Changelog
+- 2026-06-19 — VM209 about:srcdoc:109 Uncaught TypeError: val.indexOf is not a function at toCSV (VM209 about:srcdoc:109:14) at HTMLButtonElement.saveCSV (VM209 about:srcdoc:504:13)
 - 2026-06-19 — Lets make sure the Open/Save/Save As are updated to use the new OS functions
 - 2026-06-19 — This is still preventing Open/Save functionality [one_OS] os.fs.openFile() is not available in this OS (anonymous) @ VM199 about:srcdoc:30 openCSV
 - 2026-06-19 — I'm getting the following error when trying to Open - [one_OS] os.fs.openFile() is not available in this OS
