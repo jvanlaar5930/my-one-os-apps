@@ -238,7 +238,9 @@ function toCSV(data){
   for(var r=0;r<data.length;r++){
     var cells = [];
     for(var c=0;c<data[r].length;c++){
-      var val = data[r][c] || '';
+      var val = data[r][c];
+      if(val == null) val = '';
+      if(typeof val !== 'string') val = String(val);
       if(val.indexOf(',')!==-1 || val.indexOf('"')!==-1 || val.indexOf('\n')!==-1 || val.indexOf('\r')!==-1){
         val = '"'+val.replace(/"/g,'""')+'"';
       }
