@@ -208,3 +208,346 @@ let time = 0;
 let coinsCollected = 0;
 let currentSpeed = CONFIG.baseSpeed;
 let gameLoopId = null;
+
+// Helper to get high score
+function getHighScore() {
+    return parseInt(os.storage.getItem('randys_roundup_highscore') || '0');
+}
+
+function setHighScore(val) {
+    os.storage.setItem('randys_roundup_highscore', val.toString());
+}
+
+function startGame() {
+    gameState = 'PLAYING';
+    score = 0;
+    time = 0;
+    coinsCollected = 0;
+    currentSpeed = CONFIG.baseSpeed;
+    
+    startMenu.classList.add('hidden');
+    gameOverMenu.classList.add('hidden');
+    hud.classList.remove('hidden');
+    
+    initEntities();
+    lastTime = performance.now();
+    gameLoopId = requestAnimationFrame(gameLoop);
+}
+
+function gameOver() {
+    gameState = 'GAMEOVER';
+    cancelAnimationFrame(gameLoopId);
+    
+    const finalScore = Math.floor(time * (coinsCollected || 1));
+    const highScore = getHighScore();
+    const newHigh = Math.max(highScore, finalScore);
+    
+    if (newHigh > highScore) {
+        setHighScore(newHigh);
+    }
+
+    summaryContent.innerHTML = `
+        <div>Time: ${time.toFixed(1)}s</div>
+        <div>Coins: ${coinsCollected}</div>
+        <div style="font-size: 1.5rem; color: #ffcc33; margin-top: 10px;">Final Score: ${finalScore}</div>
+        <div style="font-size: 0.9rem; color: #aaa; margin-top: 5px;">High Score: ${newHigh}</div>
+    `;
+    
+    hud.classList.add('hidden');
+    gameOverMenu.classList.remove('hidden');
+    
+    os.notify("Game Over", `You scored ${finalScore} points!`);
+}
+
+function initEntities() {
+    // Reset player
+    player = {
+        x: 100,
+        y: canvas.height * CONFIG.groundY - CONFIG.playerHeight,
+        width: CONFIG.playerWidth,
+        height: CONFIG.playerHeight,
+        vy: 0,
+        grounded: true,
+        facingRight: true
+    };
+    
+    obstacles = [];
+    coins = [];
+    particles = [];
+    
+    // Initial ground obstacles
+    let spawnX = canvas.width + 100;
+    for (let i = 0; i < 5; i++) {
+        spawnX += 300 + Math.random() * 400;
+        if (Math.random() > 0.5) {
+            obstacles.push({
+                x: spawnX,
+                y: canvas.height * CONFIG.groundY - 40,
+                width: 30,
+                height: 40,
+                type: 'cactus'
+            });
+        } else {
+            obstacles.push({
+                x: spawnX,
+                y: canvas.height * CONFIG.groundY - 25,
+                width: 40,
+                height: 25,
+                type: 'rock'
+            });
+        }
+    }
+}
+
+let player = {};
+let obstacles = [];
+let coins = [];
+let particles = [];
+let lastTime = 0;
+
+// Input Handling
+const keys = {};
+window.addEventListener('keydown', e => {
+    keys[e.code] = true;
+    if ((e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') && gameState === 'PLAYING' && player.grounded) {
+        player.vy = CONFIG.jumpStrength;
+        player.grounded = false;
+    }
+});
+window.addEventListener('keyup', e => keys[e.code] = false);
+
+// Button Listeners
+startBtn.addEventListener('click', startGame);
+restartBtn.addEventListener('click', startGame);
+
+// Main Game Loop
+function gameLoop(timestamp) {
+    if (gameState !== 'PLAYING') return;
+    
+    const dt = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+    
+    // Update Time & Score
+    time += dt;
+    score += currentSpeed * dt;
+    
+    // Update HUD
+    hudScore.textContent = Math.floor(score);
+    hudCoins.textContent = coinsCollected;
+    
+    // Increase speed every 100 points
+    if (Math.floor(score) > 0 && Math.floor(score) % CONFIG.speedThreshold === 0) {
+        if (Math.floor(score) !== Math.floor((score - currentSpeed * dt))) {
+             currentSpeed += CONFIG.speedIncrement;
+        }
+    }
+
+    // Player Physics
+    player.vy += CONFIG.gravity;
+    player.y += player.vy;
+    
+    // Ground Collision
+    const groundLevel = canvas.height * CONFIG.groundY;
+    if (player.y + player.height > groundLevel) {
+        player.y = groundLevel - player.height;
+        player.vy = 0;
+        player.grounded = true;
+    }
+    
+    // Horizontal Movement
+    if (keys['KeyA'] || keys['ArrowLeft']) {
+        player.x -= 5;
+        player.facingRight = false;
+    }
+    if (keys['KeyD'] || keys['ArrowRight']) {
+        player.x += 5;
+        player.facingRight = true;
+    }
+    
+    // Keep player in bounds
+    if (player.x < 0) player.x = 0;
+    if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+
+    // Spawn Obstacles
+    if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 200) {
+        const lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
+        const gap = 300 + Math.random() * 400;
+        const type = Math.random() > 0.5 ? 'cactus' : 'rock';
+        const h = type === 'cactus' ? 40 : 25;
+        const w = type === 'cactus' ? 30 : 40;
+        
+        obstacles.push({
+            x: lastX + gap,
+            y: groundLevel - h,
+            width: w,
+            height: h,
+            type: type
+        });
+    }
+    
+    // Spawn Coins
+    if (coins.length === 0 || coins[coins.length - 1].x < canvas.width - 200) {
+        if (Math.random() < 0.3) { // 30% chance to spawn coin when obstacle spawns
+             const lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
+             const gap = 100 + Math.random() * 200;
+             const typeRoll = Math.random();
+             let cType = 'small';
+             let cScore = 1;
+             let cColor = '#ffd700';
+             let cSize = 10;
+             
+             if (typeRoll > 0.95) {
+                 cType = 'large'; cScore = 10; cColor = '#ff8c00'; cSize = 15;
+             } else if (typeRoll > 0.8) {
+                 cType = 'medium'; cScore = 5; cColor = '#daa520'; cSize = 12;
+             }
+             
+             coins.push({
+                 x: lastX + gap,
+                 y: groundLevel - 80 - Math.random() * 60,
+                 width: cSize,
+                 height: cSize,
+                 type: cType,
+                 score: cScore,
+                 color: cColor
+             });
+        }
+    }
+
+    // Update Obstacles & Collision
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+        let obs = obstacles[i];
+        obs.x -= currentSpeed;
+        
+        // Collision
+        if (
+            player.x < obs.x + obs.width &&
+            player.x + player.width > obs.x &&
+            player.y < obs.y + obs.height &&
+            player.y + player.height > obs.y
+        ) {
+            gameOver();
+            return;
+        }
+        
+        if (obs.x + obs.width < 0) obstacles.splice(i, 1);
+    }
+    
+    // Update Coins & Collection
+    for (let i = coins.length - 1; i >= 0; i--) {
+        let c = coins[i];
+        c.x -= currentSpeed;
+        
+        // Collection
+        if (
+            player.x < c.x + c.width &&
+            player.x + player.width > c.x &&
+            player.y < c.y + c.height &&
+            player.y + player.height > c.y
+        ) {
+            coinsCollected += c.score;
+            // Simple particle effect
+            for(let p=0; p<5; p++) {
+                particles.push({
+                    x: c.x + c.width/2,
+                    y: c.y + c.height/2,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4,
+                    life: 1.0,
+                    color: c.color
+                });
+            }
+            coins.splice(i, 1);
+            continue;
+        }
+        
+        if (c.x + c.width < 0) coins.splice(i, 1);
+    }
+    
+    // Update Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.05;
+        if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    // Draw
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw Ground
+    ctx.fillStyle = '#edc9af';
+    ctx.fillRect(0, groundLevel, canvas.width, canvas.height - groundLevel);
+    
+    // Draw Obstacles
+    ctx.fillStyle = '#228b22'; // Cactus Green
+    obstacles.forEach(obs => {
+        if (obs.type === 'cactus') {
+            // Simple cactus shape
+            ctx.fillRect(obs.x + obs.width/3, obs.y, obs.width/3, obs.height);
+            ctx.fillRect(obs.x, obs.y + obs.height/3, obs.width, obs.height/3);
+        } else {
+            // Rock
+            ctx.fillStyle = '#808080';
+            ctx.beginPath();
+            ctx.arc(obs.x + obs.width/2, obs.y + obs.height/2, obs.width/2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    });
+    
+    // Draw Coins
+    coins.forEach(c => {
+        ctx.fillStyle = c.color;
+        ctx.beginPath();
+        ctx.arc(c.x + c.width/2, c.y + c.height/2, c.width/2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    });
+    
+    // Draw Particles
+    particles.forEach(p => {
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 4, 4);
+        ctx.globalAlpha = 1.0;
+    });
+    
+    // Draw Player (Randy)
+    ctx.fillStyle = '#8b4513'; // Pants
+    ctx.fillRect(player.x, player.y + player.height - 20, player.width, 20);
+    ctx.fillStyle = '#ffcc33'; // Shirt
+    ctx.fillRect(player.x, player.y + 15, player.width, 20);
+    ctx.fillStyle = '#ffdbac'; // Face
+    ctx.fillRect(player.x + 5, player.y + 5, 30, 15);
+    ctx.fillStyle = '#8b4513'; // Hat
+    ctx.fillRect(player.x - 5, player.y - 5, 50, 10);
+    ctx.fillRect(player.x + 10, player.y - 15, 20, 15);
+    
+    // Eyes
+    ctx.fillStyle = '#000';
+    if (player.facingRight) {
+        ctx.fillRect(player.x + 25, player.y + 8, 4, 4);
+    } else {
+        ctx.fillRect(player.x + 10, player.y + 8, 4, 4);
+    }
+
+    gameLoopId = requestAnimationFrame(gameLoop);
+}
+
+// Resize handling
+function resize() {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    if (gameState === 'START') {
+        // Draw initial background
+        ctx.fillStyle = '#87ceeb';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+}
+window.addEventListener('resize', resize);
+resize();
+
+</script>
