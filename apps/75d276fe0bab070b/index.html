@@ -1,0 +1,34 @@
+<!--APP {"name":"Calculator","icon":"🧮"}-->
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}
+body{margin:0;height:100vh;display:flex;flex-direction:column;font-family:system-ui,Segoe UI,sans-serif;background:#0f1018;color:#eee}
+#sub{font-size:13px;color:#888;min-height:16px;padding:6px 16px 0;text-align:right}
+#disp{flex:0 0 auto;padding:6px 16px 14px;text-align:right;font-size:36px;font-weight:600;word-break:break-all}
+.grid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px}
+button{border:none;border-radius:12px;font-size:20px;background:#1c1e2b;color:#eee;cursor:pointer}
+button:hover{background:#262a3d}
+button.op{background:#2d2350;color:#c7b3ff}
+button.eq{background:linear-gradient(135deg,#7c5cff,#4c8bf5);color:#fff}
+button.fn{background:#23121a;color:#ff9d96}
+</style></head><body>
+<div id="sub"></div><div id="disp">0</div>
+<div class="grid">
+<button class="fn" data-a="clear">C</button><button class="fn" data-a="neg">+/-</button><button class="fn" data-a="pct">%</button><button class="op" data-o="/">/</button>
+<button data-d="7">7</button><button data-d="8">8</button><button data-d="9">9</button><button class="op" data-o="*">x</button>
+<button data-d="4">4</button><button data-d="5">5</button><button data-d="6">6</button><button class="op" data-o="-">-</button>
+<button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3</button><button class="op" data-o="+">+</button>
+<button data-d="0" style="grid-column:span 2">0</button><button data-d=".">.</button><button class="eq" data-a="eq">=</button>
+</div>
+<script>
+var disp=document.getElementById('disp'),sub=document.getElementById('sub');
+var cur='0',prev=null,op=null,fresh=false;
+function show(){disp.textContent=cur;sub.textContent=(prev!==null?prev+' '+(op||''):'');}
+function inputDigit(d){if(d==='.'&&cur.indexOf('.')>-1)return;if(fresh){cur=(d==='.'?'0.':d);fresh=false;}else{cur=(cur==='0'&&d!=='.')?d:cur+d;}show();}
+function calc(a,b,o){a=parseFloat(a);b=parseFloat(b);if(o==='+')return a+b;if(o==='-')return a-b;if(o==='*')return a*b;if(o==='/')return b===0?0:a/b;return b;}
+function setOp(o){if(op!==null&&!fresh){prev=calc(prev,cur,op);cur=String(prev);}else{prev=parseFloat(cur);}op=o;fresh=true;show();}
+function equals(){if(op!==null){cur=String(calc(prev,cur,op));op=null;prev=null;fresh=true;show();}}
+document.querySelector('.grid').addEventListener('click',function(e){var t=e.target;if(t.dataset.d!==undefined)inputDigit(t.dataset.d);else if(t.dataset.o)setOp(t.dataset.o);else if(t.dataset.a==='clear'){cur='0';prev=null;op=null;fresh=false;show();}else if(t.dataset.a==='eq')equals();else if(t.dataset.a==='neg'){cur=String(parseFloat(cur)*-1);show();}else if(t.dataset.a==='pct'){cur=String(parseFloat(cur)/100);show();}});
+window.addEventListener('keydown',function(e){var k=e.key;if((k>='0'&&k<='9')||k==='.')inputDigit(k);else if(k==='+'||k==='-'||k==='*'||k==='/')setOp(k);else if(k==='Enter'||k==='='){e.preventDefault();equals();}else if(k==='Escape'){cur='0';prev=null;op=null;show();}else if(k==='Backspace'){cur=cur.length>1?cur.slice(0,-1):'0';show();}});
+show();
+</script></body></html>
