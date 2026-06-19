@@ -622,45 +622,59 @@ function newCSV(){
 }
 
 function openCSV(){
-  var fileInput = document.getElementById('fileInput');
-  fileInput.onchange = function(e){
-    var file = e.target.files[0];
-    if(!file) return;
-    var reader = new FileReader();
-    reader.onload = function(ev){
-      var data = parseCSV(ev.target.result);
+  if(!window.os) return;
+  os.fs.openDialog({ filters: [{ name: 'CSV', extensions: ['csv'] }] }).then(function(path){
+    if(!path) return;
+    os.fs.readFile(path, 'utf8').then(function(content){
+      var data = parseCSV(content);
       loadData(data);
-      notify('Opened: '+file.name);
-    };
-    reader.readAsText(file);
-    fileInput.value = '';
-  };
-  fileInput.click();
+      notify('Opened: '+path.split('/').pop());
+    });
+  });
 }
 
 function saveCSV(){
   var csv = toCSV(grid);
-  var blob = new Blob([csv], {type:'text/csv'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'spreadsheet.csv';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  notify('Saved successfully');
-}
-
-function saveAsCSV(){
-  showModal('Save As CSV', '<p>Enter filename:</p><input type="text" id="saveName" value="spreadsheet.csv" style="margin-top:8px">', function(){
-    var name = document.getElementById('saveName').value || 'spreadsheet.csv';
-    var csv = toCSV(grid);
+  if(!window.os){
     var blob = new Blob([csv], {type:'text/csv'});
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = name;
+    a.download = 'spreadsheet.csv';
     a.click();
     URL.revokeObjectURL(a.href);
-    notify('Saved as: '+name);
-    closeModal();
+    notify('Saved successfully');
+    return;
+  }
+  os.fs.saveDialog({ filters: [{ name: 'CSV', extensions: ['csv'] }] }).then(function(path){
+    if(!path) return;
+    os.fs.writeFile(path, csv, 'utf8').then(function(){
+      notify('Saved successfully');
+    });
+  });
+}
+
+function saveAsCSV(){
+  var csv = toCSV(grid);
+  if(!window.os){
+    showModal('Save As CSV', '<p>Enter filename:</p><input type="text" id="saveName" value="spreadsheet.csv" style="margin-top:8px">', function(){
+      var name = document.getElementById('saveName').value || 'spreadsheet.csv';
+      var blob = new Blob([csv], {type:'text/csv'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      notify('Saved as: '+name);
+      closeModal();
+    });
+    return;
+  }
+  os.fs.saveDialog({ filters: [{ name: 'CSV', extensions: ['csv'] }] }).then(function(path){
+    if(!path) return;
+    os.fs.writeFile(path, csv, 'utf8').then(function(){
+      notify('Saved as: '+path.split('/').pop());
+      closeModal();
+    });
   });
 }
 
