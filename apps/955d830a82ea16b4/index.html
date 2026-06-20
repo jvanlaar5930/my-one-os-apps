@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeStream IDE</title>
+    <style>
+        :root {
+            --bg-dark: #0d0d0d;
+            --sidebar-bg: #1a1a1a;
+            --editor-bg: #050505;
+            --accent: #00ff41; /* Matrix Green */
+            --text-main: #e0e0e0;
+            --text-dim: #888;
+            --border: #333;
+            --font-mono: 'Fira Code', 'Courier New', monospace;
+        }
+
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            background: var(--bg-dark); color: var(--text-main);
+            font-family: sans-serif; overflow: hidden;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            grid-template-rows: 35px 1fr 150px;
+            height: 100vh; width: 100vw;
+        }
+
+        /* Top Bar */
+        header {
+            grid-column: 1 / -1;
+            background: #1e1e1e;
+            display: flex; align-items: center;
+            padding: 0 15px; gap: 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px; height: 35px;
+        }
+
+        .menu-item { cursor: pointer; color: var(--text-dim); transition: color 0.2s; }
+        .menu-item:hover { color: var(--accent); }
+
+        /* Sidebar */
+        aside {
+            grid-row: 2 / -1;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+        }
+
+        .sidebar-title {
+            padding: 10px; font-size: 11px; text-transform: uppercase;
+            color: var(--text-dim); letter-spacing: 1px; border-bottom: 1px solid var(--border);
+        }
+
+        #file-tree { flex: 1; overflow-y: auto; padding: 5px 0; }
+        .file-item {
+            padding: 4px 20px; cursor: pointer; font-size: 13px;
+            display: flex; align-items: center; gap: 8px; color: #ccc;
+        }
+        .file-item:hover { background: #2a2a2a; }
+        .file-item.active { background: #333; color: var(--accent); }
+
+        /* Main Editor Area */
+        main {
+            position: relative;
+            background: var(--editor-bg);
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        .editor-container {
+            flex: 1; position: relative; overflow: auto;
+            font-family: var(--font-mono); font-size: 14px; line-height: 1.5;
+        }
+
+        #code-input, #highlighting-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 20px; margin: 0; white-space: pre;
+            word-wrap: normal; overflow-wrap: normal; tab-size: 4;
+            border: none; outline: none; background: transparent;
+        }
+
+        #code-input {
+            color: transparent; caret-color: var(--accent);
+            resize: none; z-index: 1;
+        }
+
+        #highlighting-layer { z-index: 0; pointer-events: none; }
+
+        /* Syntax Colors */
+        .token-keyword { color: #ff79c6; font-weight: bold; }
+        .token-string { color: #f1fa8c; }
+        .token-comment { color: #6272a4; font-style: italic; }
+        .token-function { color: #50fa7b; }
+        .token-number { color: #bd93f9; }
+
+        /* AI / Console Panel */
+        #bottom-panel {
+            grid-column: 2 / 3;
+            background: var(--sidebar-bg);
+            border-top: 1px solid var(--border);
+            display: flex; flex-direction: column;
+        }
+
+        .tabs {
+            display: flex; background: #111; border-bottom: 1px solid var(--border);
+        }
+        .tab {
+            padding: 6px 15px; font-size: 11px; cursor: pointer; color: var(--text-dim);
+        }
+        .tab.active { background: var(--sidebar-bg); color: var(--accent); border-bottom: 2px solid var(--accent); }
+
+        #console-output, #ai-chat {
+            flex: 1; padding: 10px; font-family: var(--font-mono); font-size: 12px;
+            overflow-y: auto; color: #aaa; white-space: pre-wrap;
+        }
+
+        /* AI Side Panel */
+        aside#ai-panel {
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border);
+            display: flex; flex-direction: column;
+        }
+
+        .ai-input-area {
+            padding: 10px; border-top: 1px solid var(--border);
+            display: flex; gap: 5px;
+        }
+
+        #ai-query {
+            flex: 1; background: #000; border: 1px solid var(--border);
+            color: var(--accent); padding: 5px; font-size: 12px; outline: none;
+        }
+
+        .btn {
+            background: #333; color: white; border: none; cursor: pointer;
+            padding: 4px 8px; font-size: 11px; border-radius: 2px;
+        }
+        .btn:hover { background: var(--accent); color: black; }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div style="font-weight: bold; color: var(--accent)">CodeStream</div>
+        <div class="menu-item" onclick="app.saveFile()">Save</div>
+        <div class="menu-item" onclick="app.openFile()">Open...</div>
+        <div class="menu-item" onclick="app.newFile()">New File</div>
+    </header>
+
+    <aside>
+        <div class="sidebar-title">Explorer</div>
+        <div id="file-tree">
+            <!-- Files injected here -->
+        </div>
+    </aside>
+
+    <main>
+        <div class="editor-container">
+            <pre id="highlighting-layer"><code id="highlight-content"></code></pre>
+            <textarea id="code-input" spellcheck="false"></textarea>
+        </div>
+        
+        <div id="bottom-panel">
+            <div class="tabs">
+                <div class="tab active">Terminal</div>
+                <div class="tab">Problems</div>
+            </div>
+            <div id="console-output">Welcome to CodeStream IDE... Ready.</div>
+        </div>
+    </main>
+
+    <aside id="ai-panel">
+        <div class="sidebar-title">CodeStream AI</div>
+        <div id="ai-chat">Ask me anything about your code or ask to generate functions.</div>
+        <div class="ai-input-area">
+            <input type="text" id="ai-query" placeholder="Type command..." onkeydown="if(event.key==='Enter') app.askAI()">
+            <button class="btn" onclick="app.askAI()">Run</button>
+        </div>
+    </aside>
+</div>
+
+<script>
+/**
+ * CodeStream IDE Application Logic
+ */
+const app = {
+    state: {
+        currentFile: null,
+        content: '',
+        theme: 'dark',
+        fontSize: 14
+    },
+
+    async init() {
+        this.cacheDOM();
+        this.bindEvents();
+        await this.loadSettings();
+        this.log("System initialized.");
+        this.renderFileTree();
+    },
+
+    cacheDOM() {
+        this.dom = {
+            input: document.getElementById('code-input'),
+            highlight: document.getElementById('highlight-content'),
+            fileTree: document.getElementById('file-tree'),
+            console: document.getElementById('console-output'),
+            aiChat: document.getElementById('ai-chat'),
+            aiQuery: document.getElementById('ai-query')
+        };
+    },
+
+    bindEvents() {
+        this.dom.input.addEventListener('input', (e) => this.handleInput(e));
+        this.dom.input.addEventListener('scroll', () => {
+            document.getElementById('highlighting-layer').scrollTop = this.dom.input.scrollTop;
+            document.getElementById('highlighting-layer').scrollLeft = this.dom.input.scrollLeft;
+        });
+        // Tab support in textarea
+        this.dom.input.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.dom.input.selectionStart;
+                const end = this.dom.input.selectionEnd;
+                this.dom.input.value = this.dom.input.value.substring(0, start) + "    " + this.dom.input.value.substring(end);
+                this.dom.input.selectionStart = this.dom.input.selectionEnd = start + 4;
+                this.handleInput();
+            }
+        });
+    },
+
+    async loadSettings() {
+        if (window.os && os.storage) {
+            const savedTheme = await os.storage.get('cs_theme');
+            if (savedTheme) this.state.theme = savedTheme;
+        }
+    },
+
+    log(msg, isError = false) {
+        const time = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const entry = `[${time}] ${msg}\n`;
+        this.dom.console.innerText += entry;
+        this.dom.console.scrollTop = this.dom.console.scrollHeight;
+    },
+
+    async renderFileTree() {
+        if (!window.os || !os.fs) return;
+        try {
+            // Attempt to list root or home for context
+            const items = await os.fs.list('/');
+            this.dom.fileTree.innerHTML = '';
+            items.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'file-item';
+                const icon = item.type === 'dir' ? '📁' : '📄';
+                el.innerHTML = `<span>${icon}</span> ${item.name}`;
+                el.onclick = () => this.loadFile(item);
+                this.dom.fileTree.appendChild(el);
+            });
+        } catch (e) {
+            console.error("Could not list files", e);
+        }
+    },
+
+    async openFile() {
+        if (!window.os || !os.fs) return;
+        const file = await os.fs.openDialog({ title: 'Open Source File' });
+        if (file) {
+            this.state.currentFile = file.path;
+            this.dom.input.value = file.content;
+            this.handleInput();
+            this.log(`Opened: ${file.path}`);
+        }
+    },
+
+    async saveFile() {
+        if (!window.os || !os.fs) return;
+        if (this.state.currentFile) {
+            await os.fs.write(this.state.currentFile, this.dom.input.value);
+            this.log(`Saved to ${this.state.currentFile}`);
+        } else {
+            const path = await os.fs.saveDialog(this.dom.input.value, { initialName: 'untitled.js' });
+            if (path) {
+                this.state.currentFile = path;
+                await os.fs.write(path, this.dom.input.value);
+                this.log(`Saved new file: ${path}`);
+            }
+        }
+    },
+
+    async newFile() {
+        this.state.currentFile = null;
+        this.dom.input.value = '';
+        this.handleInput();
+        this.log("New buffer created.");
+    },
+
+    handleInput(e) {
+        const code = this.dom.input.value;
+        this.state.content = code;
+        this.applyHighlighting(code);
+    },
+
+    applyHighlighting(code) {
+        // Simple regex-based syntax highlighting
+        let escaped = code
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+        // Keywords
+        escaped = escaped.replace(/\b(const|let|var|function|return|if|else|for|while|import|export|class|from|new|await|async|true|false)\b/g, '<span class="token-keyword">$1</span>');
+        // Strings
+        escaped = escaped.replace(/(['"`].*?['"`])/gs, '<span class="token-string">$1</span>');
+        // Comments
+        escaped = escaped.replace(/(\/\/.*|\/\*[\s\S]*?\*\/)/g, '<span class="token-comment">$1</span>');
+        // Numbers
+        escaped = escaped.replace(/\b(\d+)\b/g, '<span class="token-number">$1</span>');
+        // Functions (simple)
+        escaped = escaped.replace(/\b(\w+)(?=\s*\()/g, '<span class="token-function">$1</span>');
+
+        this.dom.highlight.innerHTML = escaped + "\n"; // Add newline to sync scrolling
+    },
+
+    async askAI() {
+        const query = this.dom.aiQuery.value;
+        if (!query) return;
+        
+        this.dom.aiChat.innerText = "Thinking...";
+        this.dom.aiQuery.value = "";
+
+        try {
+            const prompt = `Context code:\n${this.state.content}\n\nUser Question: ${query}`;
+            const response = await os.ai.chat(prompt);
+            
+            // Clean up the markdown-ish response if needed, but just display it
+            this.dom.aiChat.innerText = response;
+            this.log("AI Response received.");
+        } catch (err) {
+            this.dom.aiChat.innerText = "Error: " + err.message;
+            this.log("AI Error", true);
+        }
+    }
+};
+
+// Boot app
+if (window.os) {
+    app.init();
+} else {
+    console.warn("Running in standalone mode - OS features disabled.");
+}
+</script>
+</body>
+</html>
