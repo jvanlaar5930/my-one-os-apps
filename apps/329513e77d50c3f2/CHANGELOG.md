@@ -1,6 +1,7 @@
 # PixelCraft Pro â€” Changelog
 
 ## Changelog
+- 2026-06-20 â€” Revert the last two commits for this app
 - 2026-06-20 â€” The app has become broken, please revert the latest commit
 - 2026-06-20 â€” If the file that is currently being worked on isn't saved before exiting, please prompt to save, cancel without saving, or cancel (to go back to editing)
 - 2026-06-20 â€” Lets revise the plan for this and rewrite
