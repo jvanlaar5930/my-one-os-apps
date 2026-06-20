@@ -357,17 +357,10 @@ const engine = {
     drawPixel(x, y, color, isEraser) {
         if (x < 0 || x >= state.width || y < 0 || y >= state.height) return;
         
-        this.ctx.fillStyle = isEraser ? 'rgba(0,0,0,0)' : color;
-        if (!isEraser) {
-            // We need to clear the area before drawing if we want exact pixel replacement 
-            // but since it's a single pixel size on canvas, we can just use composite operations.
-            this.ctx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
-            this.ctx.fillRect(x * state.cellSize, y * state.cellSize, state.cellSize, state.cellSize);
-            this.ctx.globalCompositeOperation = 'source-over';
-        } else {
-            // Eraser logic: Clear the pixel area
-            this.ctx.clearRect(x * state.cellSize, y * state.cellSize, state.cellSize, state.cellSize);
-        }
+        this.ctx.fillStyle = color;
+        this.ctx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
+        this.ctx.fillRect(x * state.cellSize, y * state.cellSize, state.cellSize, state.cellSize);
+        this.ctx.globalCompositeOperation = 'source-over';
     },
 
     async saveProject() {
