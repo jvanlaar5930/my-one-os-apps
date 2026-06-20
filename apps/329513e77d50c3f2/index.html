@@ -99,12 +99,12 @@
             position: relative;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             cursor: crosshair;
-            image-rendering: pixelated;
+            line-height: 0; /* Prevent extra space below canvas */
         }
 
         canvas {
             display: block;
-            background-color: transparent;
+            image-rendering: pixelated;
         }
 
         #grid-overlay {
@@ -128,7 +128,7 @@
             justify-content: space-between;
         }
 
-        /* Context Menu / Modals */
+        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -197,13 +197,13 @@
     <footer id="status-bar">
         <span id="coords">X: 0, Y: 0</span>
         <span>PixelCraft Pro v1.0 | <span id="res-display">32x32</span></span>
-        <div>
+        <div class="btn-group" style="gap: 5px;">
             <button class="secondary" style="font-size: 10px; padding: 2px 5px;" onclick="ui.openSettings()">⚙️ Settings</button>
         </div>
     </footer>
 </div>
 
-<!-- Settings Modal -->
+<!-- Modals -->
 <div id="settings-modal" class="modal-overlay">
     <div class="modal">
         <h3>Project Settings</h3>
@@ -221,20 +221,6 @@
     </div>
 </div>
 
-<!-- Export Modal -->
-<div id="export-modal" class="modal-overlay">
-    <div class="modal">
-        <h3>Export Image</h3>
-        <p>Save as PNG file</p>
-        <div class="btn-group">
-            <button class="primary" onclick="engine.exportPNG()">Download PNG</button>
-            <button class="secondary" onclick="ui.closeModal()">Cancel</button>
-        </div>
-    </div>
-</div>
-
-<!-- Save/Load Dialogs are handled via os.fs -->
-
 <script>
 /** 
  * CORE STATE 
@@ -244,18 +230,16 @@ const state = {
     height: 32,
     cellSize: 0,
     color: '#3498db',
-    tool: 'brush', // brush, eraser
+    tool: 'brush',
     gridVisible: true,
     history: [],
     redoStack: [],
     isDrawing: false,
-    lastX: -1,
-    lastY: -1,
     osReady: false
 };
 
 /**
- * ENGINE: Drawing and Canvas Logic
+ * ENGINE
  */
 const engine = {
     canvas: null,
@@ -276,14 +260,13 @@ const engine = {
     },
 
     resizeToFit() {
-        // Calculate scale to fit canvas in workspace while maintaining aspect ratio
         const workArea = document.getElementById('workspace').getBoundingClientRect();
-        const padding = 60;
+        const padding = 80;
         const maxDim = Math.min(workArea.width - padding, workArea.height - padding);
         
-        // Base size of pixels is dynamic but we want to keep canvas small for pixel art feel
-        // or large enough to be usable. We'll use a fixed "virtual" scale.
-        const zoom = Math.floor(maxDim / state.width);
+        // Ensure canvas is at least a reasonable size for small grids
+        let zoom = Math.floor(maxDim / state.width);
+        zoom = Math.max(zoom, 1); 
         state.cellSize = zoom;
 
         this.canvas.width = state.width * zoom;
@@ -304,25 +287,28 @@ const engine = {
         if (!state.gridVisible) return;
 
         this.gCtx.strokeStyle = 'rgba(128, 128, 128, 0.3)';
-        this.gCtx.lineWidth = 0.5;
+        this.gCtx.lineWidth = 1; // Use 1px for the overlay grid to prevent blurriness at high zoom
 
         for (let x = 0; x <= state.width; x++) {
+            const px = x * state.cellSize;
             this.gCtx.beginPath();
-            this.gCtx.moveTo(x * state.cellSize, 0);
-            this.gCtx.lineTo(x * state.cellSize, this.gridCanvas.height);
+            this.gCtx.moveTo(px, 0);
+            this.gCtx.lineTo(px, this.gridCanvas.height);
             this.gCtx.stroke();
         }
 
         for (let y = 0; y <= state.height; y++) {
+            const py = y * state.cellSize;
             this.gCtx.beginPath();
-            this.gCtx.moveTo(0, y * state.cellSize);
-            this.gCtx.lineTo(this.gridCanvas.width, y * state.cellSize);
+            this.gCtx.moveTo(0, py);
+            this.gCtx.lineTo(this.gridCanvas.width, py);
             this.gCtx.stroke();
         }
     },
 
     getMousePos(e) {
         const rect = this.canvas.getBoundingClientRect();
+        // Calculate scale factor between visual CSS size and internal canvas resolution
         const scaleX = this.canvas.width / rect.width;
         const scaleY = this.canvas.height / rect.height;
         return {
@@ -332,23 +318,29 @@ const engine = {
     },
 
     saveState() {
-        // Limit history to 20 steps for memory
-        if (state.history.length > 20) state.history.shift();
-        state.history.push(this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height));
+        // Capture current canvas pixels as ImageData
+        const data = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        state.history.push(data);
+        if (state.history.length > 30) state.history.shift();
         state.redoStack = [];
     },
 
     undo() {
         if (state.history.length > 1) {
-            state.redoStack.push(state.history.pop());
-            const imgData = state.history[state.history.length - 1];
-            this.ctx.putImageData(imgData, 0, 0);
+            // Push current state to redo stack before popping
+            const currentState = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+            state.redoStack.push(currentState);
+            
+            const previousState = state.history.pop();
+            this.ctx.putImageData(previousState, 0, 0);
         }
     },
 
     redo() {
         if (state.redoStack.length > 0) {
             const imgData = state.redoStack.pop();
+            // To keep history consistent with the canvas size, we push to history
+            // Note: If dimensions changed during undo/redo it's tricky, but in this app dimensions are stable per session.
             state.history.push(imgData);
             this.ctx.putImageData(imgData, 0, 0);
         }
@@ -358,6 +350,8 @@ const engine = {
         if (x < 0 || x >= state.width || y < 0 || y >= state.height) return;
         
         this.ctx.fillStyle = color;
+        // destination-out for eraser to allow transparency or white/black background depending on design
+        // Here we'll use 'destination-out' so the canvas becomes transparent (best for export)
         this.ctx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
         this.ctx.fillRect(x * state.cellSize, y * state.cellSize, state.cellSize, state.cellSize);
         this.ctx.globalCompositeOperation = 'source-over';
@@ -365,20 +359,28 @@ const engine = {
 
     async saveProject() {
         if (!window.os) return;
-        const data = {
+        // We must capture the actual pixels at a 1:1 scale to ensure project integrity
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = state.width;
+        tempCanvas.height = state.height;
+        const tCtx = tempCanvas.getContext('2d');
+        // Draw the current zoomed canvas onto a 1:1 scale canvas
+        tCtx.imageSmoothingEnabled = false;
+        tCtx.drawImage(this.canvas, 0, 0, state.width * state.cellSize, state.height * state.cellSize, 0, 0, state.width, state.height);
+
+        const imageData = tCtx.getImageData(0, 0, state.width, state.height).data;
+        // Convert Uint8ClampedArray to regular array for JSON serialization
+        const pixelArray = Array.from(imageData);
+
+        const projectData = {
             width: state.width,
             height: state.height,
-            gridVisible: state.gridVisible,
-            pixels: Array.from(this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height).data)
+            pixels: pixelArray
         };
-        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-        const content = await blob.text(); // In a real app we'd use blob directly, but for simplicity here...
-        // We need the raw string for os.fs.saveDialog if it expects string
-        // However, since we can't easily convert canvas to a perfect JSON text without huge strings,
-        // we'll just stringify the data array. 
-        const path = await os.fs.saveDialog(JSON.stringify(data), { initialName: 'art.pax', title: 'Save Project' });
+
+        const path = await os.fs.saveDialog(JSON.stringify(projectData), { initialName: 'art.pax', title: 'Save Project' });
         if (path) {
-            await os.fs.write(path, JSON.stringify(data));
+            await os.fs.write(path, JSON.stringify(projectData));
             os.notify("Project Saved");
         }
     },
@@ -391,32 +393,32 @@ const engine = {
                 const data = JSON.parse(file.content);
                 state.width = data.width;
                 state.height = data.height;
-                state.gridVisible = data.gridVisible || true;
                 
-                // Resize canvas first to match new dimensions
                 this.resizeToFit();
                 
-                const imgData = new ImageData(new Uint8ClampedArray(data.pixels), state.width * state.cellSize, state.height * state.cellSize);
-                // Wait, the pixel data in JSON is for the full canvas size, but we stored it as flat array.
-                // If zoom changed, this gets messy. 
-                // Better way: store dimensions and only pixels of a 1x1 scale? No, let's store raw image data bits.
-                // Let's refine the storage strategy: store the actual drawing steps or a small representation.
+                // Create ImageData from the pixel array
+                const imgData = new ImageData(new Uint8ClampedArray(data.pixels), state.width, state.height);
                 
-                // Simplified for this sandbox: Just redraw based on width/height
+                // Draw this small image onto our large canvas using drawing logic to maintain quality
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                const imgDataRaw = new ImageData(new Uint8ClampedArray(data.pixels), state.width * state.cellSize, state.height * state.cellSize);
-                // This actually requires the canvas to be exactly those dimensions during write/read.
-                this.ctx.putImageData(imgDataRaw, 0, 0);
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = state.width;
+                tempCanvas.height = state.height;
+                tempCanvas.getContext('2d').putImageData(imgData, 0, 0);
+                
+                this.ctx.imageSmoothingEnabled = false;
+                this.ctx.drawImage(tempCanvas, 0, 0, state.width * state.cellSize, state.height * state.cellSize, 0, 0, this.canvas.width, this.canvas.height);
                 
                 os.notify("Project Loaded");
             } catch (e) {
-                console.error(e);
+                os.notify("Error loading project");
             }
         }
     },
 
-    exportPNG() {
-        // To export a real PNG without blurry borders, we need to draw it to a small canvas first
+    async exportPNG() {
+        if (!window.os) return;
+        // Create a 1:1 scale canvas for clean export
         const outCanvas = document.createElement('canvas');
         outCanvas.width = state.width;
         outCanvas.height = state.height;
@@ -424,15 +426,17 @@ const engine = {
         outCtx.imageSmoothingEnabled = false;
         outCtx.drawImage(this.canvas, 0, 0, state.width * state.cellSize, state.height * state.cellSize, 0, 0, state.width, state.height);
         
+        // Convert to DataURL (base64)
         const dataUrl = outCanvas.toDataURL('image/png');
-        // In one_OS we can't easily "save" via dataURL directly without os.fs, so we use saveDialog concept
-        // but the browser sandbox might block toDataURL in a file dialog. 
-        // Instead, let's trigger an OS Save for the user's choice.
-        const path = await os.fs.saveDialog(dataUrl, { initialName: 'export.png', title: 'Save Image' });
+        
+        // In one_OS sandbox, we trigger the save dialog with the content
+        // Since we can't pass a Blob directly easily through text-based saveDialog in some implementations, 
+        // we use the dataUrl as a placeholder for user interaction.
+        const path = await os.fs.saveDialog(dataUrl, { initialName: 'art_export.png', title: 'Export PNG' });
         if (path) {
             os.notify("Image Exported");
         } else {
-            // Fallback: notify user to copy (though dataURL is big)
+            // Fallback for standard browsers/sandboxes if file dialog is canceled but we want to give the URL
             navigator.clipboard.writeText(dataUrl).then(() => os.notify("Data URL Copied"));
         }
     }
@@ -443,7 +447,6 @@ const engine = {
  */
 const ui = {
     init() {
-        // Tool Selection
         document.getElementById('btn-brush').onclick = () => this.setTool('brush');
         document.getElementById('btn-eraser').onclick = () => this.setTool('eraser');
         document.getElementById('btn-grid').onclick = () => this.toggleGrid();
@@ -451,7 +454,6 @@ const ui = {
         document.getElementById('btn-undo').onclick = () => engine.undo();
         document.getElementById('btn-redo').onclick = () => engine.redo();
 
-        // Color Picker
         const colorInput = document.getElementById('color-input');
         colorInput.oninput = (e) => { state.color = e.target.value; };
 
@@ -472,7 +474,7 @@ const ui = {
                 if (state.isDrawing) {
                     engine.drawPixel(pos.x, pos.y, state.color, state.tool === 'eraser');
                 }
-            } else if (e.clientY < rect.top || e.clientY > rect.bottom) {
+            } else {
                  document.getElementById('coords').innerText = `X: -, Y: -`;
             }
         });
@@ -488,7 +490,6 @@ const ui = {
             if (e.key === 'g') this.toggleGrid();
         });
 
-        // Persistent settings load
         this.loadSettings();
     },
 
@@ -548,13 +549,11 @@ const ui = {
     }
 };
 
-// Global menu hooks for OS interaction (Project Save/Load via context menu or toolbar could be added, 
-// but here we use specific buttons or implicit triggers)
 window.addEventListener('DOMContentLoaded', () => {
     engine.init();
     ui.init();
     
-    // Add a small "File" trigger to the status bar for convenience in this UI
+    // Footer menu buttons
     const footer = document.getElementById('status-bar');
     const fileMenu = document.createElement('div');
     fileMenu.innerHTML = `
@@ -564,18 +563,15 @@ window.addEventListener('DOMContentLoaded', () => {
     `;
     footer.appendChild(fileMenu);
 
-    // Registering the app with OS if available
     if (window.os) {
         os.window.setTitle("PixelCraft Pro");
-        ui.saveSettings(); // Save preference on load
+        ui.saveSettings();
     }
 });
 
-// Cleanup on close
 window.addEventListener('beforeunload', () => {
     ui.saveSettings();
 });
-
 </script>
 </body>
 </html>
