@@ -1,0 +1,9 @@
+{
+  "oneOS": true,
+  "contentId": "955d830a82ea16b4",
+  "slug": "955d830a82ea16b4",
+  "name": "CodeStream IDE",
+  "icon": "📟",
+  "prompt": "Lets scrap this application and start over. Create a solid plan, since this won't be going out to the internet we won't have to worry about xss attacks or sanitizing input. Build out a fully fledged IDE code editor. Keep the same name `CodeStream IDE`, the icon should be a matrix green #",
+  "updatedAt": "2026-06-20T03:16:12.051Z"
+}
