@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeStream IDE</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #24292e;
+            --toolbar-bg: #f6f8fa;
+            --border-color: #d1d5da;
+            --gutter-bg: #f0f0f0;
+            --accent-color: #0366d6;
+            --keyword: #d73a49;
+            --string: #032f62;
+            --comment: #6a737d;
+            --function: #6f42c1;
+            --number: #005cc5;
+            --operator: #d73a49;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --toolbar-bg: #161b22;
+            --border-color: #30363d;
+            --gutter-bg: #0d1117;
+            --accent-color: #58a6ff;
+            --keyword: #ff7b72;
+            --string: #a5d6ff;
+            --comment: #8b949e;
+            --function: #d2a8ff;
+            --number: #79c0ff;
+            --operator: #ff7b72;
+        }
+
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Toolbar */
+        header {
+            height: 45px;
+            background-color: var(--toolbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: rgba(125, 125, 125, 0.1);
+        }
+
+        /* Editor Area */
+        .editor-wrapper {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .gutter {
+            width: 45px;
+            background-color: var(--gutter-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 10px 5px;
+            text-align: right;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 21px;
+            color: #8b949e;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .code-container {
+            flex-grow: 1;
+            position: relative;
+            overflow: auto;
+        }
+
+        #editor-textarea, #highlight-layer {
+            margin: 0;
+            padding: 10px;
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 21px;
+            tab-size: 4;
+            white-space: pre;
+            word-wrap: normal;
+            overflow: hidden;
+            position: absolute;
+            top: 0; left: 0;
+        }
+
+        #editor-textarea {
+            color: transparent;
+            background: transparent;
+            caret-color: var(--text-color);
+            resize: none;
+            z-index: 2;
+        }
+
+        #highlight-layer {
+            z-index: 1;
+            pointer-events: none;
+            white-space: pre;
+        }
+
+        /* Syntax Highlighting Colors */
+        .token-keyword { color: var(--keyword); font-weight: bold; }
+        .token-string { color: var(--string); }
+        .token-comment { color: var(--comment); font-style: italic; }
+        .token-function { color: var(--function); }
+        .token-number { color: var(--number); }
+        .token-operator { color: var(--operator); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <button class="btn" onclick="openFile()">Open</button>
+        <button class="btn" onclick="saveFile()">Save</button>
+        <div style="flex-grow: 1;"></div>
+        <button class="btn" id="theme-toggle">Toggle Theme</button>
+    </header>
+
+    <div class="editor-wrapper">
+        <div class="gutter" id="gutter">1</div>
+        <div class="code-container" id="scroll-container">
+            <pre id="highlight-layer"><code id="highlight-content"></code></pre>
+            <textarea id="editor-textarea" spellcheck="false"></textarea>
+        </div>
+    </div>
+</div>
+
+<script>
+    const textarea = document.getElementById('editor-textarea');
+    const highlightContent = document.getElementById('highlight-content');
+    const highlightLayer = document.getElementById('highlight-layer');
+    const gutter = document.getElementById('gutter');
+    const scrollContainer = document.getElementById('scroll-container');
+    const themeBtn = document.getElementById('theme-toggle');
+
+    // --- Syntax Engine ---
+    function highlightCode(code) {
+        // Escape HTML to prevent XSS and breaking the UI
+        let escaped = code
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+        const rules = [
+            { res: /(\/\/.*|\/\*[\s\S]*?\*\/)/g, cls: 'token-comment' }, // Comments
+            { res: /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')/g, cls: 'token-string' }, // Strings
+            { res: /\b(const|let|var|function|return|if|else|for|while|import|export|class|from|extends|new|try|catch|await|async|true|false)\b/g, cls: 'token-keyword' },
+            { res: /\b(\d+)\b/g, cls: 'token-number' },
+            { res: /([+\-*\/%=!&|<>^~]+)/g, cls: 'token-operator' },
+            { res: /\b([a-zA-Z_]\w*)(?=\s*\()/g, cls: 'token-function' } // Functions
+        ];
+
+        // We use a simplified approach: wrap in spans. 
+        // To avoid nested span issues with regex, we process one by one or use a complex parser.
+        // For this lightweight engine, we do basic replacement.
+        let tokens = [];
+
+        rules.forEach(rule => {
+            escaped = escaped.replace(rule.res, (match) => {
+                return `<span class="${rule.cls}">${match}</span>`;
+            });
+        });
+
+        return escaped;
+    }
+
+    // --- Sync & Rendering ---
+    function updateEditor() {
+        const code = textarea.value;
+        highlightContent.innerHTML = highlightCode(code) + "\n"; // Extra newline to fix scroll offset
+        updateGutter();
+    }
+
+    function updateGutter() {
+        const lines = textarea.value.split('\n').length;
+        let gutterHtml = '';
+        for (let i = 1; i <= lines; i++) {
+            gutterHtml += i + '<br>';
+        }
+        gutter.innerHTML = gutterHtml;
+    }
+
+    function syncScroll() {
+        highlightLayer.scrollTop = textarea.scrollTop;
+        highlightLayer.scrollLeft = textarea.scrollLeft;
+        gutter.scrollTop = textarea.scrollTop;
+    }
+
+    // --- Event Handlers ---
+    textarea.addEventListener('input', updateEditor);
+    textarea.addEventListener('scroll', syncScroll);
+
+    textarea.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+            this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+            this.selectionStart = this.selectionEnd = start + 4;
+            updateEditor();
+        } else if (e.key === 'Enter') {
+            // Basic indentation logic
+            const pos = this.selectionStart;
+            const lines = this.value.split('\n');
+            let indent = "";
+            for(let i = pos - 1; i >= 0; i--) {
+                if(this.value[i] === '\n') break;
+                if(this.value[i] === ' ') indent += " ";
+                else if(this.value[i] === '\t') indent += "\t";
+                else break;
+            }
+            // This is simplified; in a real IDE we'd use more robust logic
+        }
+    });
+
+    // --- File I/O (OS Bridge) ---
+    async function openFile() {
+        if (!window.os) return;
+        try {
+            const file = await os.fs.openDialog({ title: 'Open Code File' });
+            if (file && file.content) {
+                textarea.value = file.content;
+                updateEditor();
+                os.notify("File loaded");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function saveFile() {
+        if (!window.os) return;
+        try {
+            const content = textarea.value;
+            const path = await os.fs.saveDialog(content, { initialName: 'code.js' });
+            if (path) {
+                os.notify("Saved to " + path);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // --- Theme & Persistence ---
+    async function toggleTheme() {
+        const current = await os.storage?.get('theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        if (window.os) await os.storage.set('theme', next);
+    }
+
+    // --- Initialization ---
+    async function init() {
+        if (window.os) {
+            const savedTheme = await os.storage.get('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // Default starter code
+        textarea.value = `// Welcome to CodeStream IDE
+function helloWorld() {
+    const greeting = "Hello, one_OS!";
+    console.log(greeting);
+    
+    for (let i = 0; i < 5; i++) {
+        document.body.style.backgroundColor = "blue";
+    }
+}`;
+        updateEditor();
+
+        themeBtn.addEventListener('click', toggleTheme);
+    }
+
+    init();
+</script>
+</body>
+</html>
