@@ -1,2 +1,577 @@
 <!--APP {"name":"PixelCraft Pro","icon":"🎨"}-->
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;font-family:monospace;display:flex;flex-direction:column;height:100vh}#toolbar{display:flex;flex-direction:column;width:60px;background:#333;padding:5px 0;border-right:1px solid #555;gap:5px}#canvas-container{flex:1;overflow:auto;display:flex;justify-content:center;align-items:center;background:#222}canvas{image-rendering:pixelated;cursor:pointer}#status-bar{background:#333;color:white;padding:5px;font-size:14px;text-align:center;border-top:1px solid #555}</style></head><body><div id="toolbar"><button id="brush-tool">✏️</button><button id="eraser-tool">🧽</button><button id="clear-btn">🗑️</button><button id="grid-toggle">🔲</button><input type="color" id="color-picker" value="#000000"></div><div id="canvas-container"><canvas id="main-canvas" width="320" height="320"></canvas></div><div id="status-bar">Ready</div><script>const canvas=document.getElementById('main-canvas');const ctx=canvas.getContext('2d');const toolbar=document.getElementById('toolbar');const colorPicker=document.getElementById('color-picker');const statusBar=document.getElementById('status-bar');let isDrawing=false;let currentTool='brush';let gridSize=16;let gridVisible=true;let undoStack=[];let redoStack=[];let lastX=0;let lastY=0;function updateStatusBar(x,y){statusBar.textContent=`Position: ${x},${y}`;}function drawPixel(x,y,color){ctx.fillStyle=color;ctx.fillRect(x*gridSize,y*gridSize,gridSize,gridSize);}function getGridCoordinates(x,y){return{gridX:Math.floor(x/gridSize),gridY:Math.floor(y/gridSize)}}function handleMouseDown(e){isDrawing=true;const rect=canvas.getBoundingClientRect();const x=e.clientX-rect.left;const y=e.clientY-rect.top;const gridCoords=getGridCoordinates(x,y);lastX=gridCoords.gridX;lastY=gridCoords.gridY;if(currentTool==='brush'){drawPixel(gridCoords.gridX,gridCoords.gridY,colorPicker.value);}else if(currentTool==='eraser'){drawPixel(gridCoords.gridX,gridCoords.gridY,'#FFFFFF');}}function handleMouseMove(e){if(!isDrawing)return;const rect=canvas.getBoundingClientRect();const x=e.clientX-rect.left;const y=e.clientY-rect.top;const gridCoords=getGridCoordinates(x,y);if(gridCoords.gridX===lastX&&gridCoords.gridY===lastY)return;lastX=gridCoords.gridX;lastY=gridCoords.gridY;if(currentTool==='brush'){drawPixel(gridCoords.gridX,gridCoords.gridY,colorPicker.value);}else if(currentTool==='eraser'){drawPixel(gridCoords.gridX,gridCoords.gridY,'#FFFFFF');}}function handleMouseUp(){isDrawing=false;}canvas.addEventListener('mousedown',handleMouseDown);canvas.addEventListener('mousemove',handleMouseMove);canvas.addEventListener('mouseup',handleMouseUp);toolbar.addEventListener('click',(e)=>{if(e.target.id==='brush-tool'){currentTool='brush';}else if(e.target.id==='eraser-tool'){currentTool='eraser';}else if(e.target.id==='clear-btn'){ctx.clearRect(0,0,canvas.width,canvas.height);}else if(e.target.id==='grid-toggle'){gridVisible=!gridVisible;}});colorPicker.addEventListener('input',()=>{if(currentTool==='brush'){drawPixel(lastX,lastY,colorPicker.value);}});</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelCraft Pro</title>
+    <style>
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-panel: #2d2d2d;
+            --accent: #3498db;
+            --text: #e0e0e0;
+            --border: #444;
+            --sidebar-width: 60px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        #app {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: 1fr 25px;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Toolbar */
+        #toolbar {
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .tool-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: background 0.2s;
+        }
+
+        .tool-btn:hover { background: #444; }
+        .tool-btn.active { background: var(--accent); color: white; }
+
+        #color-picker-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="color"] {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* Main Workspace */
+        #workspace {
+            position: relative;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                linear-gradient(45deg, #222 25%, transparent 25%), 
+                linear-gradient(-45deg, #222 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #222 75%),
+                linear-gradient(-45deg, transparent 75%, #222 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        #canvas-container {
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            cursor: crosshair;
+            line-height: 0; /* Prevent extra space below canvas */
+        }
+
+        canvas {
+            display: block;
+            image-rendering: pixelated;
+        }
+
+        #grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Status Bar */
+        #status-bar {
+            grid-column: 1 / span 2;
+            background-color: var(--bg-panel);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 11px;
+            justify-content: space-between;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal {
+            background: var(--bg-panel);
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .modal h3 { margin-bottom: 15px; }
+        .modal select, .modal input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            background: #444;
+            border: 1px solid var(--border);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button.primary { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        button.secondary { background: #555; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <aside id="toolbar">
+        <button class="tool-btn active" id="btn-brush" title="Brush (B)">🖌️</button>
+        <button class="tool-btn" id="btn-eraser" title="Eraser (E)">🧽</button>
+        <div style="height: 1px; width: 30px; background: var(--border);"></div>
+        <button class="tool-btn" id="btn-undo" title="Undo (Ctrl+Z)">↩️</button>
+        <button class="tool-btn" id="btn-redo" title="Redo (Ctrl+Y)">↪️</button>
+        <div style="height: 1px; width: 30px; background: var(--border);"></div>
+        <button class="tool-btn" id="btn-grid" title="Toggle Grid (G)">▦</button>
+        <button class="tool-btn" id="btn-clear" title="Clear Canvas">🗑️</button>
+        <div style="flex-grow: 1;"></div>
+        <div id="color-picker-container">
+            <input type="color" id="color-input" value="#3498db">
+            <span style="font-size: 10px; opacity: 0.7;">COLOR</span>
+        </div>
+    </aside>
+
+    <main id="workspace">
+        <div id="canvas-container">
+            <canvas id="pixel-canvas"></canvas>
+            <canvas id="grid-overlay"></canvas>
+        </div>
+    </main>
+
+    <footer id="status-bar">
+        <span id="coords">X: 0, Y: 0</span>
+        <span>PixelCraft Pro v1.0 | <span id="res-display">32x32</span></span>
+        <div class="btn-group" style="gap: 5px;">
+            <button class="secondary" style="font-size: 10px; padding: 2px 5px;" onclick="ui.openSettings()">⚙️ Settings</button>
+        </div>
+    </footer>
+</div>
+
+<!-- Modals -->
+<div id="settings-modal" class="modal-overlay">
+    <div class="modal">
+        <h3>Project Settings</h3>
+        <label>Grid Size</label>
+        <select id="grid-size-select">
+            <option value="16">16 x 16</option>
+            <option value="32" selected>32 x 32</option>
+            <option value="64">64 x 64</option>
+            <option value="128">128 x 128</option>
+        </select>
+        <div class="btn-group">
+            <button class="primary" onclick="ui.applySettings()">Apply</button>
+            <button class="secondary" onclick="ui.closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/** 
+ * CORE STATE 
+ */
+const state = {
+    width: 32,
+    height: 32,
+    cellSize: 0,
+    color: '#3498db',
+    tool: 'brush',
+    gridVisible: true,
+    history: [],
+    redoStack: [],
+    isDrawing: false,
+    osReady: false
+};
+
+/**
+ * ENGINE
+ */
+const engine = {
+    canvas: null,
+    ctx: null,
+    gridCanvas: null,
+    gCtx: null,
+    container: null,
+
+    init() {
+        this.canvas = document.getElementById('pixel-canvas');
+        this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+        this.gridCanvas = document.getElementById('grid-overlay');
+        this.gCtx = this.gridCanvas.getContext('2d');
+        this.container = document.getElementById('canvas-container');
+
+        window.addEventListener('resize', () => this.resizeToFit());
+        this.resizeToFit();
+    },
+
+    resizeToFit() {
+        const workArea = document.getElementById('workspace').getBoundingClientRect();
+        const padding = 80;
+        const maxDim = Math.min(workArea.width - padding, workArea.height - padding);
+        
+        // Ensure canvas is at least a reasonable size for small grids
+        let zoom = Math.floor(maxDim / state.width);
+        zoom = Math.max(zoom, 1); 
+        state.cellSize = zoom;
+
+        this.canvas.width = state.width * zoom;
+        this.canvas.height = state.height * zoom;
+        this.gridCanvas.width = state.width * zoom;
+        this.gridCanvas.height = state.height * zoom;
+        
+        this.container.style.width = `${this.canvas.width}px`;
+        this.container.style.height = `${this.canvas.height}px`;
+        this.canvas.style.width = `${this.canvas.width}px`;
+        this.canvas.style.height = `${this.canvas.height}px`;
+
+        this.renderGrid();
+    },
+
+    renderGrid() {
+        this.gCtx.clearRect(0, 0, this.gridCanvas.width, this.gridCanvas.height);
+        if (!state.gridVisible) return;
+
+        this.gCtx.strokeStyle = 'rgba(128, 128, 128, 0.3)';
+        this.gCtx.lineWidth = 1; // Use 1px for the overlay grid to prevent blurriness at high zoom
+
+        for (let x = 0; x <= state.width; x++) {
+            const px = x * state.cellSize;
+            this.gCtx.beginPath();
+            this.gCtx.moveTo(px, 0);
+            this.gCtx.lineTo(px, this.gridCanvas.height);
+            this.gCtx.stroke();
+        }
+
+        for (let y = 0; y <= state.height; y++) {
+            const py = y * state.cellSize;
+            this.gCtx.beginPath();
+            this.gCtx.moveTo(0, py);
+            this.gCtx.lineTo(this.gridCanvas.width, py);
+            this.gCtx.stroke();
+        }
+    },
+
+    getMousePos(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        // Calculate scale factor between visual CSS size and internal canvas resolution
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        return {
+            x: Math.floor(((e.clientX - rect.left) * scaleX) / state.cellSize),
+            y: Math.floor(((e.clientY - rect.top) * scaleY) / state.cellSize)
+        };
+    },
+
+    saveState() {
+        // Capture current canvas pixels as ImageData
+        const data = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        state.history.push(data);
+        if (state.history.length > 30) state.history.shift();
+        state.redoStack = [];
+    },
+
+    undo() {
+        if (state.history.length > 1) {
+            // Push current state to redo stack before popping
+            const currentState = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+            state.redoStack.push(currentState);
+            
+            const previousState = state.history.pop();
+            this.ctx.putImageData(previousState, 0, 0);
+        }
+    },
+
+    redo() {
+        if (state.redoStack.length > 0) {
+            const imgData = state.redoStack.pop();
+            // To keep history consistent with the canvas size, we push to history
+            // Note: If dimensions changed during undo/redo it's tricky, but in this app dimensions are stable per session.
+            state.history.push(imgData);
+            this.ctx.putImageData(imgData, 0, 0);
+        }
+    },
+
+    drawPixel(x, y, color, isEraser) {
+        if (x < 0 || x >= state.width || y < 0 || y >= state.height) return;
+        
+        this.ctx.fillStyle = color;
+        // destination-out for eraser to allow transparency or white/black background depending on design
+        // Here we'll use 'destination-out' so the canvas becomes transparent (best for export)
+        this.ctx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
+        this.ctx.fillRect(x * state.cellSize, y * state.cellSize, state.cellSize, state.cellSize);
+        this.ctx.globalCompositeOperation = 'source-over';
+    },
+
+    async saveProject() {
+        if (!window.os) return;
+        // We must capture the actual pixels at a 1:1 scale to ensure project integrity
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = state.width;
+        tempCanvas.height = state.height;
+        const tCtx = tempCanvas.getContext('2d');
+        // Draw the current zoomed canvas onto a 1:1 scale canvas
+        tCtx.imageSmoothingEnabled = false;
+        tCtx.drawImage(this.canvas, 0, 0, state.width * state.cellSize, state.height * state.cellSize, 0, 0, state.width, state.height);
+
+        const imageData = tCtx.getImageData(0, 0, state.width, state.height).data;
+        // Convert Uint8ClampedArray to regular array for JSON serialization
+        const pixelArray = Array.from(imageData);
+
+        const projectData = {
+            width: state.width,
+            height: state.height,
+            pixels: pixelArray
+        };
+
+        const path = await os.fs.saveDialog(JSON.stringify(projectData), { initialName: 'art.pax', title: 'Save Project' });
+        if (path) {
+            await os.fs.write(path, JSON.stringify(projectData));
+            os.notify("Project Saved");
+        }
+    },
+
+    async loadProject() {
+        if (!window.os) return;
+        const file = await os.fs.openDialog({ title: 'Open Project' });
+        if (file && file.content) {
+            try {
+                const data = JSON.parse(file.content);
+                state.width = data.width;
+                state.height = data.height;
+                
+                this.resizeToFit();
+                
+                // Create ImageData from the pixel array
+                const imgData = new ImageData(new Uint8ClampedArray(data.pixels), state.width, state.height);
+                
+                // Draw this small image onto our large canvas using drawing logic to maintain quality
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = state.width;
+                tempCanvas.height = state.height;
+                tempCanvas.getContext('2d').putImageData(imgData, 0, 0);
+                
+                this.ctx.imageSmoothingEnabled = false;
+                this.ctx.drawImage(tempCanvas, 0, 0, state.width * state.cellSize, state.height * state.cellSize, 0, 0, this.canvas.width, this.canvas.height);
+                
+                os.notify("Project Loaded");
+            } catch (e) {
+                os.notify("Error loading project");
+            }
+        }
+    },
+
+    async exportPNG() {
+        if (!window.os) return;
+        // Create a 1:1 scale canvas for clean export
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = state.width;
+        outCanvas.height = state.height;
+        const outCtx = outCanvas.getContext('2d');
+        outCtx.imageSmoothingEnabled = false;
+        outCtx.drawImage(this.canvas, 0, 0, state.width * state.cellSize, state.height * state.cellSize, 0, 0, state.width, state.height);
+        
+        // Convert to DataURL (base64)
+        const dataUrl = outCanvas.toDataURL('image/png');
+        
+        // In one_OS sandbox, we trigger the save dialog with the content
+        // Since we can't pass a Blob directly easily through text-based saveDialog in some implementations, 
+        // we use the dataUrl as a placeholder for user interaction.
+        const path = await os.fs.saveDialog(dataUrl, { initialName: 'art_export.png', title: 'Export PNG' });
+        if (path) {
+            os.notify("Image Exported");
+        } else {
+            // Fallback for standard browsers/sandboxes if file dialog is canceled but we want to give the URL
+            navigator.clipboard.writeText(dataUrl).then(() => os.notify("Data URL Copied"));
+        }
+    }
+};
+
+/**
+ * UI & INTERACTION 
+ */
+const ui = {
+    init() {
+        document.getElementById('btn-brush').onclick = () => this.setTool('brush');
+        document.getElementById('btn-eraser').onclick = () => this.setTool('eraser');
+        document.getElementById('btn-grid').onclick = () => this.toggleGrid();
+        document.getElementById('btn-clear').onclick = () => this.clearCanvas();
+        document.getElementById('btn-undo').onclick = () => engine.undo();
+        document.getElementById('btn-redo').onclick = () => engine.redo();
+
+        const colorInput = document.getElementById('color-input');
+        colorInput.oninput = (e) => { state.color = e.target.value; };
+
+        // Canvas Events
+        const c = engine.canvas;
+        c.addEventListener('mousedown', (e) => {
+            engine.saveState();
+            state.isDrawing = true;
+            const pos = engine.getMousePos(e);
+            engine.drawPixel(pos.x, pos.y, state.color, state.tool === 'eraser');
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            const rect = engine.canvas.getBoundingClientRect();
+            if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                const pos = engine.getMousePos(e);
+                document.getElementById('coords').innerText = `X: ${pos.x}, Y: ${pos.y}`;
+                if (state.isDrawing) {
+                    engine.drawPixel(pos.x, pos.y, state.color, state.tool === 'eraser');
+                }
+            } else {
+                 document.getElementById('coords').innerText = `X: -, Y: -`;
+            }
+        });
+
+        window.addEventListener('mouseup', () => state.isDrawing = false);
+
+        // Shortcuts
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'z') engine.undo();
+            if (e.ctrlKey && e.key === 'y') engine.redo();
+            if (e.key === 'b') this.setTool('brush');
+            if (e.key === 'e') this.setTool('eraser');
+            if (e.key === 'g') this.toggleGrid();
+        });
+
+        this.loadSettings();
+    },
+
+    setTool(t) {
+        state.tool = t;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        const id = t === 'brush' ? 'btn-brush' : 'btn-eraser';
+        document.getElementById(id).classList.add('active');
+    },
+
+    toggleGrid() {
+        state.gridVisible = !state.gridVisible;
+        engine.renderGrid();
+    },
+
+    clearCanvas() {
+        if (confirm("Clear entire canvas?")) {
+            engine.saveState();
+            engine.ctx.clearRect(0, 0, engine.canvas.width, engine.canvas.height);
+        }
+    },
+
+    openSettings() {
+        document.getElementById('settings-modal').style.display = 'flex';
+    },
+
+    closeModal() {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+    },
+
+    applySettings() {
+        const size = parseInt(document.getElementById('grid-size-select').value);
+        state.width = size;
+        state.height = size;
+        document.getElementById('res-display').innerText = `${size}x${size}`;
+        engine.resizeToFit();
+        this.closeModal();
+    },
+
+    async loadSettings() {
+        if (window.os && os.storage) {
+            const savedSize = await os.storage.get('pref_grid_size');
+            if (savedSize) {
+                state.width = savedSize;
+                state.height = savedSize;
+                document.getElementById('grid-size-select').value = savedSize;
+                document.getElementById('res-display').innerText = `${savedSize}x${savedSize}`;
+                engine.resizeToFit();
+            }
+        }
+    },
+
+    async saveSettings() {
+        if (window.os && os.storage) {
+            await os.storage.set('pref_grid_size', state.width);
+        }
+    }
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    engine.init();
+    ui.init();
+    
+    // Footer menu buttons
+    const footer = document.getElementById('status-bar');
+    const fileMenu = document.createElement('div');
+    fileMenu.innerHTML = `
+        <button class="secondary" style="font-size: 10px; padding: 2px 5px;" onclick="engine.saveProject()">💾 Save</button>
+        <button class="secondary" style="font-size: 10px; padding: 2px 5px;" onclick="engine.loadProject()">📂 Open</button>
+        <button class="secondary" style="font-size: 10px; padding: 2px 5px;" onclick="engine.exportPNG()">🖼️ Export</button>
+    `;
+    footer.appendChild(fileMenu);
+
+    if (window.os) {
+        os.window.setTitle("PixelCraft Pro");
+        ui.saveSettings();
+    }
+});
+
+window.addEventListener('beforeunload', () => {
+    ui.saveSettings();
+});
+</script>
+</body>
+</html>
