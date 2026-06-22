@@ -9,13 +9,14 @@ Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan 
 _1 app(s) · last updated 2026-06-18_
 
 <!-- one_OS:apps -->
-## Apps (14)
+## Apps (15)
 
 | | App | Description |
 | --- | --- | --- |
 | ♟️ | [Battle Chess 3D](apps/cf29ea7f944b3b6f/) | ## Build Plan: 3D Battle Chess **Summary:** A turn-based chess game with canvas-based 3D rendering, theme selection, AI opponent, and animated piece destruction. Players move pieces in 3D space; computer (or swapped player) responds. Win by capturing the enemy king. **Features:** - Theme menu (Classic, Animals, Vehicles, Ninjas, etc.) with color/character-style variants - Canvas 3D board with perspective camera; click-to-move turn-based interaction - Move highlighting: select piece → see all legal moves → click destination - Capture animation: defeated pieces spin and fade with a "Destroy" effect - Minimax AI opponent (3-move look-ahead with alpha-beta pruning) - Running timer (pausable), turn indicator, captured pieces display - Win condition: enemy king captured → Victorious! overlay with victory pose and "New Game" button **Bridge & data:** - `os.storage`: selected theme, timer state, move history (for undo/replay), AI difficulty setting - No file I/O or AI chat needed **Layout:** - Full window: **Menu** (theme grid) → **Game** (canvas board left, sidebar right: timer + captured pieces + move log + pause button) → **Victory modal** (overlay with victory pose, "Victorious!" text, New Game button) - Flexible sizing (canvas and sidebar scale with window) **Build steps:** 1. **Menu & theme system:** Create a selectable theme grid (5–6 themes); on select, initialize board state and store theme choice. 2. **3D canvas setup & piece rendering:** Implement perspective projection math (3D → 2D canvas); draw board plane and pieces as 3D geometry (cubes/pyramids); add click-to-square input mapping. 3. **Chess rules & move validation:** Piece classes (Pawn, Rook, Knight, Bishop, Queen, King); validate legal moves per piece type; track whose turn it is. 4. **Move interaction & animation:** Highlight legal moves on piece click; execute move on square click; animate piece slide and capture "spin-fade" effect; detect check/checkmate. 5. **AI opponent:** Implement minimax search (depth 3–4); add 500ms delay so it doesn't play instantly; alternate turns. 6. **Timer, win detection & polish:** Add running timer (pausable button); check win condition after every move; display victory modal with king-over-king visual pose; persist game to storage; "New Game" resets. |
 | 🧮 | [Calculator](apps/75d276fe0bab070b/) | A calculator with basic arithmetic and keyboard support. |
 | 📅 | [Calendar](apps/23ed594f80aeb660/) | A calendar with month and week views, per-day events added via a hover + on each day, and a light/dark theme toggle. |
+| 🎮 | [Card Match Champion](apps/plan-dnaaquvmqpjv1jp/) | Lets create a matching game with a match history / leaderboard that logs every completed game: A persistent leaderboard with multiple historical entries (player name, score, time, date per game played) Stats across dozens of sessions you want to sort or filter ("show my top 10 best times on hard mode") |
 | ⏰ | [Clock](apps/c8a83e7283f1f3ab/) | A clock app with a live clock, stopwatch, and countdown timer. |
 | 📟 | [CodeStream IDE](apps/955d830a82ea16b4/) | Lets scrap this application and start over. Create a solid plan, since this won't be going out to the internet we won't have to worry about xss attacks or sanitizing input. Build out a fully fledged IDE code editor. Keep the same name `CodeStream IDE`, the icon should be a matrix green # |
 | ⌨️ | [CodeStream IDE](apps/e4cd4d3ab276d1fb/) | build me an IDE code editor with syntax highlighting |
@@ -28,5 +29,5 @@ _1 app(s) · last updated 2026-06-18_
 | 🐍 | [Snek](apps/7081c7a6a0a2f4a5/) | add a snake game called Snek |
 | 🗑️ | [Trash](apps/566d6ede2d448616/) | A trash bin that lists deleted files and can restore them or empty the trash. |
 
-_14 app(s) Â· last updated 2026-06-22 by one_OS._
+_15 app(s) Â· last updated 2026-06-22 by one_OS._
 <!-- /one_OS:apps -->
