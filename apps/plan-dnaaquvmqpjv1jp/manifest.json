@@ -5,11 +5,14 @@
   "name": "Card Match Champion",
   "icon": "🎮",
   "prompt": "Lets create a matching game with a match history / leaderboard that logs every completed game:\n\nA persistent leaderboard with multiple historical entries (player name, score, time, date per game played)\nStats across dozens of sessions you want to sort or filter (\"show my top 10 best times on hard mode\")",
-  "permissions": [],
+  "permissions": [
+    "database"
+  ],
   "files": [
     "index.html",
     "styles.css",
     "app.js"
   ],
-  "updatedAt": "2026-06-22T18:31:43.485Z"
+  "lastChange": "Lets create a matching game with a match history / leaderboard that logs every completed game: A persistent leaderboard with multiple historical entries (player name, score, time, date per game played",
+  "updatedAt": "2026-06-22T18:38:22.581Z"
 }
