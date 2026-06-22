@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-f5uofqymqplkcpz",
+  "slug": "plan-f5uofqymqplkcpz",
+  "name": "Bitcoin Trade Live",
+  "icon": "💹",
+  "prompt": "\"Build a live Bitcoin trade feed. Connect to wss://stream.binance.com:9443/ws/btcusdt@trade using os.network.socket. Each trade arrives as JSON — show a scrolling list of the last 20 trades with price, quantity, and a green (buy) or red (sell) color. Display connection status and reconnect automatically on close",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-22T19:17:48.208Z"
+}
