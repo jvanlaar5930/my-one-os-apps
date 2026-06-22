@@ -5,11 +5,14 @@
   "name": "Crypto Ticker",
   "icon": "📈",
   "prompt": "Build a live crypto price ticker using os.network.fetch. Fetch Bitcoin and Ethereum prices from https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd every 15 seconds. Show price and a green/red indicator for the direction of the last change.",
-  "permissions": [],
+  "permissions": [
+    "network"
+  ],
   "files": [
     "index.html",
     "styles.css",
     "app.js"
   ],
-  "updatedAt": "2026-06-22T19:11:33.051Z"
+  "lastChange": "Build a live crypto price ticker using os.network.fetch. Fetch Bitcoin and Ethereum prices from https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd every 15 seconds. S",
+  "updatedAt": "2026-06-22T19:14:56.740Z"
 }
