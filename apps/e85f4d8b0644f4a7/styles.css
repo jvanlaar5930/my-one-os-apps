@@ -1,0 +1,9 @@
+body { margin: 0; overflow: hidden; background: #f4a460; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; touch-action: none; }
+  canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+  .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(34, 26, 18, 0.85); color: #fff; z-index: 10; backdrop-filter: blur(4px); }
+  .hidden { display: none !important; }
+  button { padding: 16px 32px; font-size: 22px; cursor: pointer; background: #d2691e; border: 2px solid #8b4513; color: white; border-radius: 8px; margin-top: 20px; transition: transform 0.1s, background 0.2s; font-weight: bold; }
+  button:hover { background: #e67e22; transform: scale(1.05); }
+  h1 { font-size: 48px; margin-bottom: 10px; text-shadow: 3px 3px 0 #000; letter-spacing: 2px; }
+  p { font-size: 18px; margin: 6px 0; color: #f5deb3; }
+  .stat-box { background: rgba(0,0,0,0.4); padding: 15px 25px; border-radius: 10px; margin-top: 15px; text-align: center; }
