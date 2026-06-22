@@ -11,6 +11,6 @@
     "styles.css",
     "app.js"
   ],
-  "lastChange": "the character jumps a little high, and the game starts a bit fast",
-  "updatedAt": "2026-06-22T19:23:21.936Z"
+  "lastChange": "Make it so pressing the space makes it jump the current height, holding space for longer makes it jump higher, add a bit more gravity. The goal is to get a good in between so if you hodl for too long ",
+  "updatedAt": "2026-06-22T19:26:12.644Z"
 }
