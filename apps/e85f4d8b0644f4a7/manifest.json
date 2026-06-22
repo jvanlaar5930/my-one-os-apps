@@ -5,6 +5,12 @@
   "name": "Randy's Roundup",
   "icon": "🤠",
   "prompt": "Create a 2d side scrolling platformer game that is an endless running game. The goal is to get as far as possible. The highest time and most points win. The player is a cowboy named Randy. The name of the game is Randy's Roundup set in the desert. The objects the player jumps over are desert themed. There are coins to collect - Large coins (very rare) are 10, Medium (rare) are 5, small (common) are 1. The final score is `Time * Coin count`. \n\nThe player should have physics based jumping, the game should start out somewhat slow and progressivly get faster. Every 100 points the speed should increase. \n\nThere should be a starting menu with the controls - WSAD/Arrow Keys for movement - Space for jump. Press Button to start game. \n\nOn death, there should be a summary of Time/Points and final score.",
-  "lastChange": "Fix `Best Score: NaN` on the `Game Over` screen",
-  "updatedAt": "2026-06-19T20:44:04.062Z"
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "lastChange": "the character jumps a little high, and the game starts a bit fast",
+  "updatedAt": "2026-06-22T19:23:21.936Z"
 }
