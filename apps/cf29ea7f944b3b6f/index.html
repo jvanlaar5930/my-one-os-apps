@@ -1,0 +1,52 @@
+<!--APP {"name":"Battle Chess 3D","icon":"♟️"}-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Chess 3D</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div id="root" class="app-container">
+        <div id="menuScreen" class="screen">
+            <div class="menu-box">
+                <h1>⚔️ Battle Chess 3D</h1>
+                <p class="subtitle">Select a Theme</p>
+                <div class="theme-grid" id="themeGrid"></div>
+            </div>
+        </div>
+
+        <div id="gameScreen" class="screen" style="display: none;">
+            <div class="game-wrapper">
+                <canvas id="gameCanvas" class="game-canvas"></canvas>
+                <div class="sidebar">
+                    <div class="timer-block">
+                        <div class="timer" id="timer">00:00</div>
+                        <button id="pauseBtn" class="btn">Pause</button>
+                    </div>
+                    <div class="turn-block" id="turnBlock">White's Turn</div>
+                    <div class="captured-block">
+                        <h3>Captured</h3>
+                        <div class="captured-list" id="capturedList"></div>
+                    </div>
+                    <div class="moves-block">
+                        <h3>Moves</h3>
+                        <div class="move-list" id="moveList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="victoryScreen" class="screen" style="display: none;">
+            <div class="victory-box">
+                <div class="victory-text" id="victoryText">Victory!</div>
+                <canvas id="victoryCanvas" class="victory-canvas"></canvas>
+                <button id="newGameBtn" class="btn primary">New Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./app.js"></script>
+</body>
+</html>
