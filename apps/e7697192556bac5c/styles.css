@@ -1,0 +1,211 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #0a0e27;
+  color: #e0e0e0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #1a1f3a;
+  border-bottom: 1px solid #2a3050;
+  flex-shrink: 0;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #888;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+}
+
+.status-badge.connected .status-dot {
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+}
+
+.status-badge.connecting .status-dot {
+  background: #facc15;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-badge.disconnected .status-dot {
+  background: #ef4444;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.reconnect-button {
+  padding: 6px 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.reconnect-button:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.reconnect-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.reconnect-button:disabled {
+  background: #555;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.trades-container {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.trades-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.trade-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 60px;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #1a2038;
+  font-size: 13px;
+  align-items: center;
+  transition: background 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.trade-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.trade-row.up {
+  border-left-color: #4ade80;
+}
+
+.trade-row.down {
+  border-left-color: #ef4444;
+}
+
+.trade-asset {
+  font-weight: 600;
+  font-size: 13px;
+  color: #fff;
+}
+
+.trade-price {
+  font-weight: 600;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 13px;
+  color: #fff;
+}
+
+.trade-quantity {
+  color: #a0a0a0;
+  font-size: 12px;
+  font-family: 'Courier New', 'Monaco', monospace;
+}
+
+.trade-time {
+  color: #808080;
+  font-size: 12px;
+  text-align: right;
+}
+
+.trade-indicator {
+  width: 50px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.trade-indicator.up {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.trade-indicator.down {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-size: 14px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e27;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a4050;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a5060;
+}
