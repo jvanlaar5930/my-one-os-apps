@@ -1,6 +1,7 @@
 # Randy's Roundup — Changelog
 
 ## Changelog
+- 2026-06-22 â€” the character jumps a little high, and the game starts a bit fast
 - 2026-06-19 — Fix `Best Score: NaN` on the `Game Over` screen
 - 2026-06-19 — Lets space the speed up by ever 200 points
 - 2026-06-19 — Revert the latest commits to `index.html` for this app
