@@ -1,0 +1,18 @@
+{
+  "oneOS": true,
+  "contentId": "e7697192556bac5c",
+  "slug": "e7697192556bac5c",
+  "name": "Bitcoin Trade Live",
+  "icon": "💹",
+  "prompt": "\"Build a live Bitcoin trade feed. Connect to wss://stream.binance.com:9443/ws/btcusdt@trade using os.network.socket. Each trade arrives as JSON — show a scrolling list of the last 20 trades with price, quantity, and a green (buy) or red (sell) color. Display connection status and reconnect automatically on close",
+  "permissions": [
+    "network"
+  ],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "lastChange": "Edit the Bitcoin trade feed app — replace the Binance WebSocket URL with CoinCap's: wss://ws.coincap.io/prices?assets=bitcoin,ethereum. The message format from CoinCap is a JSON object like {\"bitcoin\"",
+  "updatedAt": "2026-06-22T19:28:56.944Z"
+}
