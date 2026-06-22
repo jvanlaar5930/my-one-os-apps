@@ -1,6 +1,7 @@
 # Randy's Roundup — Changelog
 
 ## Changelog
+- 2026-06-22 â€” Make it so pressing the space makes it jump the current height, holding space for longer makes it jump higher, add a bit more gravity. The goal is to get a good in between so if you hodl for too long you might get over the first, but hit the second. This allows for objects to be grouped closer together
 - 2026-06-22 â€” the character jumps a little high, and the game starts a bit fast
 - 2026-06-19 — Fix `Best Score: NaN` on the `Game Over` screen
 - 2026-06-19 — Lets space the speed up by ever 200 points
