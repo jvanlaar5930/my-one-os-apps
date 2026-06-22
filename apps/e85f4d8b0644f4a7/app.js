@@ -30,9 +30,12 @@
   const player = {
     x: 100, y: 0, w: 40, h: 60, vy: 0, grounded: false, color: '#8B4513'
   };
-  const gravity = 0.65;
-  const jumpForce = -15;
+  const gravity = 0.85;
   let groundY = H - 100;
+  let jumpCharge = 0;
+  let isCharging = false;
+  const maxCharge = 25;
+  const chargeMultiplier = 0.6;
 
   // Entities
   let obstacles = [];
@@ -44,12 +47,22 @@
     keys[e.code] = true;
     if (gameState === 'playing' && player.grounded) {
       if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
-        player.vy = jumpForce;
-        player.grounded = false;
+        jumpCharge = 0;
+        isCharging = true;
       }
     }
   });
-  window.addEventListener('keyup', e => keys[e.code] = false);
+  window.addEventListener('keyup', e => {
+    keys[e.code] = false;
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+      if (isCharging && jumpCharge > 0) {
+        player.vy = -(jumpCharge * chargeMultiplier);
+        player.grounded = false;
+      }
+      isCharging = false;
+      jumpCharge = 0;
+    }
+  });
 
   // UI Elements
   const startMenu = document.getElementById('startMenu');
@@ -117,6 +130,11 @@
       player.y = groundY - player.h;
       player.vy = 0;
       player.grounded = true;
+    }
+
+    // Charge jump while grounded and space is held
+    if (isCharging && player.grounded && jumpCharge < maxCharge) {
+      jumpCharge += 1;
     }
 
     // Obstacles
