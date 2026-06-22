@@ -1,0 +1,14 @@
+{
+  "oneOS": true,
+  "contentId": "plan-pj5rpummqphnf9f",
+  "slug": "plan-pj5rpummqphnf9f",
+  "name": "New App",
+  "icon": "🧩",
+  "prompt": "## Build Plan: 3D Battle Chess\n\n**Summary:** A turn-based chess game with canvas-based 3D rendering, theme selection, AI opponent, and animated piece destruction. Players move pieces in 3D space; computer (or swapped player) responds. Win by capturing the enemy king.\n\n**Features:**\n- Theme menu (Classic, Animals, Vehicles, Ninjas, etc.) with color/character-style variants\n- Canvas 3D board with perspective camera; click-to-move turn-based interaction\n- Move highlighting: select piece → see all legal moves → click destination\n- Capture animation: defeated pieces spin and fade with a \"Destroy\" effect\n- Minimax AI opponent (3-move look-ahead with alpha-beta pruning)\n- Running timer (pausable), turn indicator, captured pieces display\n- Win condition: enemy king captured → Victorious! overlay with victory pose and \"New Game\" button\n\n**Bridge & data:**\n- `os.storage`: selected theme, timer state, move history (for undo/replay), AI difficulty setting\n- No file I/O or AI chat needed\n\n**Layout:**\n- Full window: **Menu** (theme grid) → **Game** (canvas board left, sidebar right: timer + captured pieces + move log + pause button) → **Victory modal** (overlay with victory pose, \"Victorious!\" text, New Game button)\n- Flexible sizing (canvas and sidebar scale with window)\n\n**Build steps:**\n1. **Menu & theme system:** Create a selectable theme grid (5–6 themes); on select, initialize board state and store theme choice.\n2. **3D canvas setup & piece rendering:** Implement perspective projection math (3D → 2D canvas); draw board plane and pieces as 3D geometry (cubes/pyramids); add click-to-square input mapping.\n3. **Chess rules & move validation:** Piece classes (Pawn, Rook, Knight, Bishop, Queen, King); validate legal moves per piece type; track whose turn it is.\n4. **Move interaction & animation:** Highlight legal moves on piece click; execute move on square click; animate piece slide and capture \"spin-fade\" effect; detect check/checkmate.\n5. **AI opponent:** Implement minimax search (depth 3–4); add 500ms delay so it doesn't play instantly; alternate turns.\n6. **Timer, win detection & polish:** Add running timer (pausable button); check win condition after every move; display victory modal with king-over-king visual pose; persist game to storage; \"New Game\" resets.",
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-22T17:28:32.184Z"
+}
