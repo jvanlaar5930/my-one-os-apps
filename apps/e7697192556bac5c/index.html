@@ -1,0 +1,25 @@
+<!--APP {"name":"Bitcoin Trade Live","icon":"💹"}-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitcoin Trade Live</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="app">
+    <div class="status-bar">
+      <div class="status-badge" id="statusBadge">
+        <span class="status-dot"></span>
+        <span id="statusText">Connecting...</span>
+      </div>
+      <button id="reconnectBtn" class="reconnect-button">Reconnect</button>
+    </div>
+    <div class="trades-container">
+      <div id="tradesList" class="trades-list"></div>
+    </div>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
