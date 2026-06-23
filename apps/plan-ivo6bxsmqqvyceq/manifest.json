@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-ivo6bxsmqqvyceq",
+  "slug": "plan-ivo6bxsmqqvyceq",
+  "name": "Pillar 4 Test",
+  "icon": "🧪",
+  "prompt": "Build a \"Pillar 4 Test\" app that tests four things with clearly labeled buttons:\n\nDownload — generates a small text file and triggers an <a download> link to save it\nFullscreen — buttons to call os.window.requestFullscreen(), os.window.exitFullscreen(), and os.window.isFullscreen() with the result shown on screen\nBlob Worker — spawns an inline new Worker(URL.createObjectURL(blob)) that computes a sum on a large array and posts the result back; show \"Worker result: X\"\nPointer Lock — a click target that calls document.body.requestPointerLock(); show current lock state via the pointerlockchange event",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-23T16:56:42.750Z"
+}
