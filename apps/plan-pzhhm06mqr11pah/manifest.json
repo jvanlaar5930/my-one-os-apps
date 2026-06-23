@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-pzhhm06mqr11pah",
+  "slug": "plan-pzhhm06mqr11pah",
+  "name": "Bridge Tester",
+  "icon": "🧪",
+  "prompt": "Build a test app that has buttons to call os.ai.chat, os.fs.read, os.clipboard.read, and os.notify — one button per capability. Show the result or error under each button.\n\nAdditional planning feedback: ye",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-23T19:20:01.726Z"
+}
