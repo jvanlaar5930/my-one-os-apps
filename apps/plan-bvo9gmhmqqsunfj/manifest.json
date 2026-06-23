@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-bvo9gmhmqqsunfj",
+  "slug": "plan-bvo9gmhmqqsunfj",
+  "name": "Binary Roundtrip Tester",
+  "icon": "🔄",
+  "prompt": "Build an app that tests binary file round-trips. It should: draw a small pattern on a canvas, export it as a base64 PNG, save it with os.fs.writeBinary, read it back with os.fs.readBinary, create a blob URL with os.assets.createUrl, and display it in an img tag. Show each step's status on screen.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-23T15:29:38.373Z"
+}
