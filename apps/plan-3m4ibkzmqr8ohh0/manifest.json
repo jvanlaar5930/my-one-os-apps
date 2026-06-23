@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-3m4ibkzmqr8ohh0",
+  "slug": "plan-3m4ibkzmqr8ohh0",
+  "name": "Prime Cruncher",
+  "icon": "🔢",
+  "prompt": "Build a Prime Number Cruncher app. It should:\n\n1. Have a number input (default 1,000,000) and a \"Start\" button.\n2. When clicked, spawn a background worker using os.workers.spawn() that runs a \n   Sieve of Eratosthenes up to the given number.\n3. The worker should send progress messages back every ~50ms with \n   { type: \"progress\", percent, found } so the UI can show a live progress bar \n   and running count of primes found.\n4. When done, the worker sends { type: \"done\", count, elapsed } and terminates.\n5. While the worker is running, keep a separate lightweight animation running \n   on the main thread (a simple CSS spinner or bouncing dot) to visually prove \n   the UI thread is NOT blocked.\n6. Show the final count and time taken when complete.\n7. Allow cancelling a running calculation (call worker.terminate()).",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-23T22:54:13.867Z"
+}
