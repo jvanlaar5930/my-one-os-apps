@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-n3wd4oemqshvzlw",
+  "slug": "plan-n3wd4oemqshvzlw",
+  "name": "Weather Radar",
+  "icon": "🌦️",
+  "prompt": "Build me a weather radar viewer",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-24T20:00:41.458Z"
+}
