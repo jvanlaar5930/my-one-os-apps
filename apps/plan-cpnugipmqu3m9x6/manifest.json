@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-cpnugipmqu3m9x6",
+  "slug": "plan-cpnugipmqu3m9x6",
+  "name": "PA Map Explorer",
+  "icon": "🗺️",
+  "prompt": "create me a fully interactive map of PA with drag and zoom functionality",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-25T22:56:05.883Z"
+}
