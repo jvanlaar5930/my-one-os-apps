@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-qt682pkmqtz4yy7",
+  "slug": "plan-qt682pkmqtz4yy7",
+  "name": "Dow Ticker",
+  "icon": "📈",
+  "prompt": "Create a ticker display that pulls in the top 10 dow prices. There should be a live view and a view of the last X (configurable) days in a graph form. \n\nBy default set the top 10, but allow users to configure whatever dow code they want",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-06-25T20:56:21.812Z"
+}
