@@ -1,0 +1,24 @@
+{
+  "oneOS": true,
+  "contentId": "ae4f5b6fcd8bf3b3",
+  "slug": "ae4f5b6fcd8bf3b3",
+  "name": "ECHO PATHS",
+  "icon": "https://cdn.polyhaven.com/asset_img/thumbs/aerial_beach_03.png?height=200",
+  "prompt": "Game Studio: ECHO PATHS",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js",
+    "src/assets/manifest.json",
+    "src/main.js",
+    "src/scenes/EraPreview.js",
+    "src/scenes/Game.js",
+    "src/scenes/GameOver.js",
+    "src/scenes/HighScores.js",
+    "src/scenes/MainMenu.js",
+    "src/scenes/Settings.js",
+    "src/SKILL.md"
+  ],
+  "updatedAt": "2026-06-26T21:03:23.120Z"
+}
