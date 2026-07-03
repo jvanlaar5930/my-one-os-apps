@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-f20tti6mr5c0a61",
+  "slug": "plan-f20tti6mr5c0a61",
+  "name": "Stock Tier Trader",
+  "icon": "📈",
+  "prompt": "Create me a day trading app that calculates the top 10 stocks to trade within a tiered pricing. IE investing $10-100, $100-1000, $1000-10000",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-07-03T19:36:48.747Z"
+}
