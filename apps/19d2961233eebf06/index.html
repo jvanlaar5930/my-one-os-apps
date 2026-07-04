@@ -1,0 +1,110 @@
+<!--APP {"name":"Password Vault","icon":"🔒"}-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Vault</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Lock Screen View -->
+        <section id="view-lock" class="view hidden">
+            <div class="auth-card">
+                <h1>🔒 Password Vault</h1>
+                <p id="auth-message">Enter master password to unlock</p>
+                <form id="auth-form">
+                    <input type="password" id="master-password-input" placeholder="Master Password" required autocomplete="current-password">
+                    <div class="button-group">
+                        <button type="submit" id="unlock-btn">Unlock</button>
+                        <button type="button" id="setup-btn" class="hidden">Set Master Password</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Dashboard View -->
+        <section id="view-dashboard" class="view hidden">
+            <header class="app-header">
+                <h2>My Credentials</h2>
+                <div class="header-actions">
+                    <button id="btn-add-new" class="btn-primary">+ New</button>
+                    <button id="btn-lock" class="btn-secondary">🔒 Lock</button>
+                    <button id="btn-dark-mode" class="btn-icon" aria-label="Toggle dark mode">🌙</button>
+                </div>
+            </header>
+
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search credentials...">
+                <div class="category-filters">
+                    <button class="filter-tab active" data-type="all">All</button>
+                    <button class="filter-tab" data-type="api_key">API Keys</button>
+                    <button class="filter-tab" data-type="user_pass">User/Pass</button>
+                    <button class="filter-tab" data-type="note">Notes</button>
+                </div>
+            </div>
+
+            <main id="credentials-list" class="scrollable"></main>
+        </section>
+
+        <!-- Editor View -->
+        <section id="view-editor" class="view hidden">
+            <header class="app-header">
+                <h2 id="editor-title">New Entry</h2>
+                <div class="header-actions">
+                    <button id="btn-cancel" class="btn-secondary">Cancel</button>
+                    <button id="btn-save" class="btn-primary">Save</button>
+                    <button id="btn-dark-mode-editor" class="btn-icon" aria-label="Toggle dark mode">🌙</button>
+                </div>
+            </header>
+
+            <form id="entry-form" class="scrollable">
+                <div class="form-group">
+                    <label for="field-title">Title</label>
+                    <div class="input-with-copy">
+                        <input type="text" id="field-title" required placeholder="e.g. GitHub Account">
+                        <button type="button" class="btn-icon copy-btn" aria-label="Copy title" onclick="copyToClipboard(document.getElementById('field-title').value, this)">📋</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="field-type">Type</label>
+                    <select id="field-type">
+                        <option value="user_pass">Username / Password</option>
+                        <option value="api_key">API Key</option>
+                        <option value="note">Secure Note</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="group-username">
+                    <label for="field-username">Username / Client ID</label>
+                    <div class="input-with-copy">
+                        <input type="text" id="field-username" placeholder="e.g. user@example.com">
+                        <button type="button" class="btn-icon copy-btn" aria-label="Copy username" onclick="copyToClipboard(document.getElementById('field-username').value, this)">📋</button>
+                    </div>
+                </div>
+
+                <div class="form-group" id="group-password">
+                    <label for="field-password">Password / Secret Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="field-password" placeholder="••••••••">
+                        <button type="button" id="btn-toggle-password" class="btn-icon">👁️</button>
+                        <button type="button" class="btn-icon copy-btn" aria-label="Copy password" onclick="copyToClipboard(document.getElementById('field-password').value, this)">📋</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="field-note">Note (Optional)</label>
+                    <div class="input-with-copy input-with-copy--top">
+                        <textarea id="field-note" rows="4" placeholder="Additional details..."></textarea>
+                        <button type="button" class="btn-icon copy-btn" aria-label="Copy note" onclick="copyToClipboard(document.getElementById('field-note').value, this)">📋</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
