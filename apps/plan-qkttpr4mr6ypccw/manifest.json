@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-qkttpr4mr6ypccw",
+  "slug": "plan-qkttpr4mr6ypccw",
+  "name": "Kanban Pro",
+  "icon": "📋",
+  "prompt": "Build a full-scale kanban board app using real Vue single-file components (.vue files) and TypeScript composables, organized under src/components and src/composables.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-07-04T22:58:55.552Z"
+}
