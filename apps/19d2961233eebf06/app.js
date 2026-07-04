@@ -10,6 +10,10 @@ let currentFilterType = 'all';
 let searchQuery = '';
 let editingId = null; // null for new, id for update
 let isDarkMode = false;
+let autoLockTimeout = 0; // minutes, 0 = never
+let lockOnMinimize = true;
+let recoveryEmail = '';
+let autoLockTimer = null;
 
 // --- Initialization ---
 async function init() {
@@ -18,6 +22,7 @@ async function init() {
     await setupDatabase();
     await loadAuthStatus();
     await loadDarkModePreference();
+    await loadSettings();
 
     setupEventListeners();
     switchView('lock');
@@ -49,6 +54,39 @@ async function loadAuthStatus() {
         document.getElementById('auth-message').textContent = 'Set your master password to begin';
         document.getElementById('unlock-btn').textContent = 'Create Password';
     }
+}
+
+// --- Settings ---
+async function loadSettings() {
+    if (!window.os) return;
+    const storedTimeout = await os.storage.get('auto_lock_timeout');
+    autoLockTimeout = storedTimeout !== null ? storedTimeout : 0;
+    const storedMinimize = await os.storage.get('lock_on_minimize');
+    lockOnMinimize = storedMinimize !== null ? storedMinimize : true;
+    recoveryEmail = (await os.storage.get('recovery_email')) || '';
+}
+
+function startAutoLockTimer() {
+    clearAutoLockTimer();
+    if (autoLockTimeout > 0) {
+        autoLockTimer = setTimeout(() => {
+            if (currentView !== 'lock') {
+                switchView('lock');
+                if (window.os) os.notify("Vault auto-locked");
+            }
+        }, autoLockTimeout * 60 * 1000);
+    }
+}
+
+function clearAutoLockTimer() {
+    if (autoLockTimer !== null) {
+        clearTimeout(autoLockTimer);
+        autoLockTimer = null;
+    }
+}
+
+function resetAutoLockTimer() {
+    if (currentView === 'dashboard') startAutoLockTimer();
 }
 
 // --- Dark Mode ---
@@ -91,7 +129,12 @@ function switchView(viewName) {
     if (target) {
         target.classList.remove('hidden');
         currentView = viewName;
-        if (viewName === 'dashboard') renderCredentials();
+        if (viewName === 'dashboard') {
+            renderCredentials();
+            startAutoLockTimer();
+        } else if (viewName === 'lock') {
+            clearAutoLockTimer();
+        }
     }
 }
 
@@ -143,18 +186,15 @@ function setupEventListeners() {
         document.getElementById('group-password').style.display = (type === 'note') ? 'none' : 'block';
     });
 
-    // Window Focus/Blur Security
-    window.addEventListener('blur', () => {
-        if (currentView !== 'lock') {
-            switchView('lock');
-            os.notify("Vault Locked");
-        }
-    });
     document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden' && currentView !== 'lock') {
+        if (document.visibilityState === 'hidden' && lockOnMinimize && currentView !== 'lock') {
             switchView('lock');
+            if (window.os) os.notify("Vault Locked");
         }
     });
+
+    document.addEventListener('mousemove', resetAutoLockTimer);
+    document.addEventListener('keydown', resetAutoLockTimer);
 }
 
 // --- Logic Handlers ---
