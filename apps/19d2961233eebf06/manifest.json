@@ -5,16 +5,12 @@
   "name": "Password Vault",
   "icon": "🔒",
   "prompt": "Please create an app to securely store passwords in. The software should be able to add/edit passwords and store them in different categories (API key, Username/Password, Secure Note). The app should require a password, and every time the app minimizes it should re-ask for the password.",
-  "permissions": [
-    "notifications",
-    "database",
-    "clipboard"
-  ],
+  "permissions": [],
   "files": [
     "index.html",
     "styles.css",
     "app.js"
   ],
-  "lastChange": "Add a dark mode toggle that persists the user's preference and updates all colors accordingly.",
-  "updatedAt": "2026-07-04T13:39:07.780Z"
+  "lastChange": "manual re-sync from app settings",
+  "updatedAt": "2026-07-04T19:26:00.932Z"
 }
