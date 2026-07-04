@@ -3,7 +3,7 @@
 Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan (`plan.md`) and a self-contained `index.html`.
 
 <!-- one_OS:apps -->
-## Apps (26)
+## Apps (29)
 
 | | App | Description |
 | --- | --- | --- |
@@ -26,13 +26,16 @@ Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan 
 | 📝 | [Notes](apps/b1dc53040015a823/) | A notes app with a list of notes and an editor, autosaved. |
 | 🗺️ | [PA Map Explorer](apps/plan-cpnugipmqu3m9x6/) | create me a fully interactive map of PA with drag and zoom functionality |
 | 🎨 | [Paint](apps/18871a62bc606ddd/) | A paint app with color, brush size, eraser, clear, and save to the filesystem. |
+| 🔒 | [Password Vault](apps/19d2961233eebf06/) | Please create an app to securely store passwords in. The software should be able to add/edit passwords and store them in different categories (API key, Username/Password, Secure Note). The app should require a password, and every time the app minimizes it should re-ask for the password. |
+| 🔒 | [Password Vault](apps/plan-wfpqpxbmr69l7n8/) | Please create an app to securely store passwords in. The software should be able to add/edit passwords and store them in different categories (API key, Username/Password, Secure Note). The app should require a password, and every time the app minimizes it should re-ask for the password. |
 | 🧪 | [Pillar 4 Test](apps/plan-ivo6bxsmqqvyceq/) | Build a "Pillar 4 Test" app that tests four things with clearly labeled buttons: Download — generates a small text file and triggers an <a download> link to save it Fullscreen — buttons to call os.window.requestFullscreen(), os.window.exitFullscreen(), and os.window.isFullscreen() with the result shown on screen Blob Worker — spawns an inline new Worker(URL.createObjectURL(blob)) that computes a sum on a large array and posts the result back; show "Worker result: X" Pointer Lock — a click target that calls document.body.requestPointerLock(); show current lock state via the pointerlockchange event |
 | 🎨 | [PixelCraft Pro](apps/329513e77d50c3f2/) | Build me a pixel art editor |
 | 🔢 | [Prime Cruncher](apps/plan-3m4ibkzmqr8ohh0/) | Build a Prime Number Cruncher app. It should: 1. Have a number input (default 1,000,000) and a "Start" button. 2. When clicked, spawn a background worker using os.workers.spawn() that runs a Sieve of Eratosthenes up to the given number. 3. The worker should send progress messages back every ~50ms with { type: "progress", percent, found } so the UI can show a live progress bar and running count of primes found. 4. When done, the worker sends { type: "done", count, elapsed } and terminates. 5. While the worker is running, keep a separate lightweight animation running on the main thread (a simple CSS spinner or bouncing dot) to visually prove the UI thread is NOT blocked. 6. Show the final count and time taken when complete. 7. Allow cancelling a running calculation (call worker.terminate()). |
 | 🤠 | [Randy's Roundup](apps/e85f4d8b0644f4a7/) | Create a 2d side scrolling platformer game that is an endless running game. The goal is to get as far as possible. The highest time and most points win. The player is a cowboy named Randy. The name of the game is Randy's Roundup set in the desert. The objects the player jumps over are desert themed. There are coins to collect - Large coins (very rare) are 10, Medium (rare) are 5, small (common) are 1. The final score is `Time * Coin count`. The player should have physics based jumping, the game should start out somewhat slow and progressivly get faster. Every 100 points the speed should increase. There should be a starting menu with the controls - WSAD/Arrow Keys for movement - Space for jump. Press Button to start game. On death, there should be a summary of Time/Points and final score. |
 | 🐍 | [Snek](apps/7081c7a6a0a2f4a5/) | add a snake game called Snek |
+| 📈 | [Stock Tier Trader](apps/plan-f20tti6mr5c0a61/) | Create me a day trading app that calculates the top 10 stocks to trade within a tiered pricing. IE investing $10-100, $100-1000, $1000-10000 |
 | 🗑️ | [Trash](apps/566d6ede2d448616/) | A trash bin that lists deleted files and can restore them or empty the trash. |
 | 🌦️ | [Weather Radar](apps/plan-n3wd4oemqshvzlw/) | Build me a weather radar viewer |
 
-_26 app(s) Â· last updated 2026-06-26 by one_OS._
+_29 app(s) Â· last updated 2026-07-04 by one_OS._
 <!-- /one_OS:apps -->
