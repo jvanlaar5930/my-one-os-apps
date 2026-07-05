@@ -1,0 +1,27 @@
+{
+  "oneOS": true,
+  "contentId": "73ec5a47909bdb26",
+  "slug": "73ec5a47909bdb26",
+  "name": "Kanban Pro",
+  "icon": "📋",
+  "prompt": "Build a full-scale kanban board app using real Vue single-file components (.vue files) and TypeScript composables, organized under src/components and src/composables.\n\nStart with: Set up the SQLite schema and a TypeScript utility to handle relational queries for tasks, columns, and their ordering.",
+  "permissions": [
+    "fs",
+    "notifications",
+    "database"
+  ],
+  "files": [
+    "index.html",
+    "styles.css",
+    "src/utility/dbUtils.js",
+    "src/composables/useKanban.js",
+    "app.ts",
+    "src/components/Column.vue",
+    "src/components/KanbanApp.vue",
+    "src/components/TaskCard.vue",
+    "src/components/TaskModal.vue",
+    "settings.json"
+  ],
+  "lastChange": "Finalize fails because src/components/Column.vue has invalid Vue template markup: invalid end tag / missing end tag. Please repair the Vue SFC files so Finalize succeeds. Preserve existing behavior, k",
+  "updatedAt": "2026-07-05T01:46:08.973Z"
+}
