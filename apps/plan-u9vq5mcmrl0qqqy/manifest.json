@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-u9vq5mcmrl0qqqy",
+  "slug": "plan-u9vq5mcmrl0qqqy",
+  "name": "WealthFlow",
+  "icon": "📈",
+  "prompt": "Create me an app that can generate passive income.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-07-14T19:04:07.784Z"
+}
