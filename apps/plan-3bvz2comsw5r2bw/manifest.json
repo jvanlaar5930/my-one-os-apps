@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-3bvz2comsw5r2bw",
+  "slug": "plan-3bvz2comsw5r2bw",
+  "name": "Dream Diary",
+  "icon": "💭",
+  "prompt": "Build me a dream diary",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-08-16T18:49:01.161Z"
+}
