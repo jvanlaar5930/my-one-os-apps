@@ -1,0 +1,21 @@
+{
+  "oneOS": true,
+  "contentId": "ec0ace20dc95813b",
+  "slug": "ec0ace20dc95813b",
+  "name": "Rampage Roller",
+  "icon": "https://api.iconify.design/game-icons/game-console.svg?color=%23ffffff",
+  "prompt": "Game Studio: Rampage Roller",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "src/main.js",
+    "src/scenes/MainMenu.js",
+    "src/scenes/RampageLevel.js",
+    "src/scenes/Results.js",
+    "app.js",
+    "src/assets/manifest.json",
+    "src/SKILL.md"
+  ],
+  "updatedAt": "2026-08-20T21:24:26.057Z"
+}
