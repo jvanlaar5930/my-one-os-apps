@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-mcmrswlmt3ccjo8",
+  "slug": "plan-mcmrswlmt3ccjo8",
+  "name": "Deal Alert System",
+  "icon": "🚨",
+  "prompt": "Build a Deal Alert System app with these features:\n\n1. **Feed Manager**: Allow users to add/edit/delete RSS feed URLs (default feeds: Slickdeals Hot Deals, Slickdeals Frontpage, DealNews). Each feed has a name and URL.\n\n2. **Alert Rules**: Users can create rules with criteria like:\n   - Keywords to match (comma-separated)\n   - Max price threshold\n   - Category/tags\n   - Whether to alert on new deals only or all matching\n\n3. **Deal Feed Display**: Show parsed deals from all feeds in a unified list, sorted by newest. Each deal shows: title, price, original price, discount %, source feed, time posted, and whether it matches any rule (with highlight).\n\n4. **Matched Deals Panel**: A separate view showing only deals that match active rules, with the matching rule(s) shown.\n\n5. **Notifications**: Show browser notifications for new matched deals. Include a sound option toggle.\n\n6. **Stats Dashboard**: Show total feeds monitored, active rules count, matches found today, best deal of the day (highest discount).\n\n7. **Auto-refresh**: A refresh button and auto-refresh interval setting (every 5/10/15/30 minutes).\n\nDesign: Dark theme, clean card-based layout. Use a color system where matched deals glow green, unmatched are neutral gray. Make it feel like a trader's dashboard — dense but readable.\n\nTechnical notes: Parse RSS feeds using a CORS proxy or direct fetch where possible. Handle feed parsing gracefully with fallback messages for unavailable feeds. Store all config (feeds, rules, preferences) in localStorage so it persists between sessions.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-08-21T20:03:22.639Z"
+}
