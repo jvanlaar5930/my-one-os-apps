@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-x52ggrfmt5taabt",
+  "slug": "plan-x52ggrfmt5taabt",
+  "name": "Session Manager",
+  "icon": "🔄",
+  "prompt": "Session Manager / Multi-User Profile Switcher - An app that saves and restores entire desktop sessions (open apps, their positions, active documents) with one click or keyboard shortcut. Users can create profiles like \"Work,\" \"Gaming,\" \"Creative\" — each saving a different layout of running apps and settings. Instantly switch between them without manually re-opening everything. This is critical for an OS that wants to serve both productivity and entertainment workflows seamlessly, especially since the user enjoys gaming alongside general desktop use.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-08-23T12:58:03.789Z"
+}
