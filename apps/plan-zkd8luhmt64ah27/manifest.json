@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-zkd8luhmt64ah27",
+  "slug": "plan-zkd8luhmt64ah27",
+  "name": "New App",
+  "icon": "🧩",
+  "prompt": "Build a single-page app called \"Tiny Check\". It should display the text \"chain test ok\" and one button. When the button is clicked, the text changes to \"clicked\". Nothing else — no storage, no settings, no extra screens. Minimal design.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-08-23T18:05:26.887Z"
+}
