@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-v6suk4jmta7mse4",
+  "slug": "plan-v6suk4jmta7mse4",
+  "name": "FlowBoard",
+  "icon": "📋",
+  "prompt": "Build a beautiful Kanban board app called \"FlowBoard\" with these features:\n\n**Core Features:**\n- Multiple columns (default: Backlog, To Do, In Progress, Review, Done)\n- Cards within each column that can be dragged and dropped between columns\n- Ability to add new cards by clicking an \"Add Card\" button at the bottom of each column\n- Click on a card to edit its title, description, and assignee\n- Delete cards with a trash icon\n- Rename columns by double-clicking the column header\n- Add new columns with a \"+\" button\n- Color-coded labels/tags on cards (bug, feature, improvement, etc.)\n\n**UI/Design:**\n- Clean, modern design with soft shadows and rounded corners\n- Smooth drag-and-drop animations\n- Column backgrounds in subtle different colors\n- Card hover effects\n- Responsive layout that works well on screen\n- Dark mode friendly color scheme\n\n**Data Persistence:**\n- Save all board state (columns, cards, positions) to localStorage so it persists between sessions\n\n**Technical:**\n- Single HTML file with embedded CSS and JavaScript\n- Use native drag-and-drop API for card movement\n- Modal or inline editing for card details\n- No external dependencies — pure vanilla JS/CSS/HTML",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-08-26T19:01:50.422Z"
+}
