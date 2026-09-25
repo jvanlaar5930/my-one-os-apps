@@ -1,0 +1,10 @@
+{
+  "policy": "Use downloaded or cataloged CC0 assets first. Procedural placeholders are allowed only when no suitable online asset is found.",
+  "assets": [
+    {
+      "role": "icon",
+      "url": "https://api.iconify.design/game-icons/mono-wheel-robot.svg?color=%23ffffff",
+      "attribution": "\"mono-wheel-robot\" — game-icons.net (CC BY 3.0, https://creativecommons.org/licenses/by/3.0/)"
+    }
+  ]
+}
