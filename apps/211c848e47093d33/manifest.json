@@ -1,0 +1,24 @@
+{
+  "oneOS": true,
+  "contentId": "211c848e47093d33",
+  "slug": "211c848e47093d33",
+  "name": "Agent010101",
+  "icon": "https://api.iconify.design/game-icons/mono-wheel-robot.svg?color=%23ffffff",
+  "prompt": "Game Studio: Agent010101",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js",
+    "src/main.js",
+    "src/assets/manifest.json",
+    "src/SKILL.md",
+    "src/scenes/GameOver.js",
+    "src/scenes/Level1.js",
+    "src/scenes/Level2.js",
+    "src/scenes/Level3.js",
+    "src/scenes/MainMenu.js",
+    "src/scenes/Victory.js"
+  ],
+  "updatedAt": "2026-09-25T17:38:32.082Z"
+}
