@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-3xflwylmulk5okj",
+  "slug": "plan-3xflwylmulk5okj",
+  "name": "New App",
+  "icon": "🧩",
+  "prompt": "Create a simple counter app. Display a number starting at 0, with buttons to increment and decrement it. Use a clean, minimal design. No special features needed.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-09-28T18:06:26.408Z"
+}
