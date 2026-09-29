@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-szqo7wkmun1f5kl",
+  "slug": "plan-szqo7wkmun1f5kl",
+  "name": "Screenshot Tool",
+  "icon": "📸",
+  "prompt": "Build a lightweight screenshot and snipping tool with these features:\n\n- Full screen capture button that saves a screenshot to /Downloads\n- Snip mode: click a button to enter snip mode, then drag to select a rectangular region of the screen and capture it\n- Copy to clipboard option for screenshots\n- Show a quick preview or notification when a screenshot is taken\n- Simple, minimal UI with just the essential buttons\n- Store recent screenshots in a list so users can see what they've captured\n\nMake it fast and responsive, no heavy dependencies. Keep the UI clean and uncluttered.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-09-29T18:58:57.810Z"
+}
