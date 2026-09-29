@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-t5e4pemmun2u2xa",
+  "slug": "plan-t5e4pemmun2u2xa",
+  "name": "Weather Station",
+  "icon": "🌤️",
+  "prompt": "Create a weather app that:\n\n1. Starts with a clean input screen asking for a zip code\n2. Takes the zip code and fetches current weather data\n3. Displays the current weather conditions (temperature, conditions, humidity, wind)\n4. Shows a weather radar map visualization centered on that location\n5. Allow the user to enter a new zip code to update the weather\n\nUse a public weather API (like Open-Meteo or similar free API that doesn't require auth) to get weather data and radar imagery. Make it visually clean with a blue/weather theme.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-09-29T19:37:18.919Z"
+}
