@@ -1,0 +1,18 @@
+{
+  "oneOS": true,
+  "contentId": "27079af9a027babc",
+  "slug": "27079af9a027babc",
+  "name": "Card Match Champion",
+  "icon": "🎮",
+  "prompt": "Lets create a matching game with a match history / leaderboard that logs every completed game:\n\nA persistent leaderboard with multiple historical entries (player name, score, time, date per game played)\nStats across dozens of sessions you want to sort or filter (\"show my top 10 best times on hard mode\")",
+  "permissions": [
+    "database"
+  ],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "lastChange": "Add visual polish: smooth transitions, hover/focus states, loading and empty states, and refined spacing and typography throughout.",
+  "updatedAt": "2026-09-29T17:55:39.145Z"
+}
