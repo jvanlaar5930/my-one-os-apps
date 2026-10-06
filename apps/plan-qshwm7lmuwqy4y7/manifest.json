@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-qshwm7lmuwqy4y7",
+  "slug": "plan-qshwm7lmuwqy4y7",
+  "name": "Code Snippet Manager",
+  "icon": "💻",
+  "prompt": "A tool for developers to save, organize, and quickly insert code snippets with syntax highlighting and tagging.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-10-06T14:02:43.088Z"
+}
