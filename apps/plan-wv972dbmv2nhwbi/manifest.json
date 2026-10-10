@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "contentId": "plan-wv972dbmv2nhwbi",
+  "slug": "plan-wv972dbmv2nhwbi",
+  "name": "Political Trends Dashboard",
+  "icon": "📊",
+  "prompt": "Build a \"Political Trends Dashboard\" app that displays the latest political trends, news, and developments. The app should:\n\n1. Fetch and display current political news headlines from multiple perspectives/sources\n2. Show trending topics/tags in politics (e.g., elections, policy debates, international relations)\n3. Include a clean, modern dashboard layout with cards for different categories (US Politics, International, Policy/Legislation, Elections)\n4. Have a search/filter bar to narrow by topic or region\n5. Display timestamps and source attribution for each item\n6. Use a professional color scheme suitable for news consumption\n\nSince we can't do real-time web fetching from the app itself, simulate realistic political trend data with a mix of current-style headlines and make it look polished and functional as a dashboard UI.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "updatedAt": "2026-10-10T17:23:44.700Z"
+}
