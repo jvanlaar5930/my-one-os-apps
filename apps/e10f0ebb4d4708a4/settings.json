@@ -1,0 +1,1 @@
+{"fields":[{"key":"vegetarianOnly","label":"Vegetarian meals only","type":"boolean","default":false},{"key":"maxTotalMinutes","label":"Maximum prep + cook minutes (0 = any)","type":"number","default":0}]}
