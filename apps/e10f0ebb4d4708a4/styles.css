@@ -1,0 +1,69 @@
+:root {
+  --accent: #4c8bf5;
+  --accent-2: #7b5cff;
+  --accent-soft: rgba(124, 92, 255, 0.16);
+  --ring: 0 0 0 3px rgba(124, 92, 255, 0.38);
+  --bg: #0d0f18;
+  --surface: #161824;
+  --bg-glass: rgba(18, 20, 30, 0.74);
+  --bg-elevated: rgba(22, 24, 36, 0.97);
+  --bg-hover: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text: #f1f3f8;
+  --text-dim: #a4abbd;
+  --text-faint: rgba(255, 255, 255, 0.4);
+  --danger: #f0645a;
+  --warning: #fbbf24;
+  --success: #34d399;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.28);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --mono: 'Cascadia Code', 'Cascadia Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body, #app { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+::selection { background: rgba(124, 92, 255, 0.4); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border: 2px solid transparent; border-radius: 8px; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 255, 255, 0.26); }
+::-webkit-scrollbar-track { background: transparent; }
+body { overflow: hidden; }
+button, select, input { -webkit-tap-highlight-color: transparent; }
+button { touch-action: manipulation; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+button:focus-visible, select:focus-visible { outline: 2px solid var(--accent) !important; outline-offset: 3px; }
+button, input, select, p, li, h1, h2, h3 { overflow-wrap: anywhere; }
+.btn { background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px; font-size: 13px; font-weight: 500; box-shadow: inset 0 1px 0 rgba(255,255,255,.05); cursor: pointer; transition: background .14s ease, border-color .14s ease, box-shadow .14s ease, transform .08s ease; }
+.btn:hover { background: rgba(255,255,255,.12); border-color: var(--border-strong); }
+.btn:active { transform: scale(.97); }
+.btn:focus-visible { outline: none; box-shadow: var(--ring); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; font-weight: 600; box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 6px 18px rgba(98,102,250,.32); }
+.btn-primary:hover { background: linear-gradient(135deg, var(--accent), var(--accent-2)); filter: brightness(1.1); border-color: transparent; }
+.btn.sm { padding: 5px 10px; font-size: 12px; }
+.icon-btn { display: inline-grid; place-items: center; width: 30px; height: 28px; border: none; border-radius: 7px; background: transparent; color: var(--text-dim); cursor: pointer; transition: background .14s ease, transform .08s ease; }
+.icon-btn:hover { background: var(--bg-hover); color: var(--text); }
+.icon-btn:active { transform: scale(.97); }
+.icon-btn:focus-visible { outline: none; box-shadow: var(--ring); }
+.field { width: 100%; background: rgba(0,0,0,.28); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 11px; font-size: 13px; outline: none; transition: border-color .14s ease, box-shadow .14s ease, background .14s ease; }
+.field:hover { border-color: var(--border-strong); }
+.field:focus { border-color: rgba(124,92,255,.7); background: rgba(0,0,0,.36); box-shadow: var(--ring); }
+.field::placeholder { color: var(--text-faint); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (pointer: coarse) {
+  button, .btn, select { min-height: 44px; }
+  .icon-btn { min-width: 44px; min-height: 44px; }
+  input, select, textarea, .field { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
