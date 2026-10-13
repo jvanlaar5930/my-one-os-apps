@@ -1,0 +1,33 @@
+{
+  "oneOS": true,
+  "contentId": "e10f0ebb4d4708a4",
+  "slug": "e10f0ebb4d4708a4",
+  "name": "Recipe Roulette",
+  "icon": "🍽️",
+  "prompt": "Build Recipe Roulette, a polished dinner recipe picker. Main screen has a prominent 'Spin for Dinner' button that selects a random recipe from a varied built-in collection of at least 30 complete dinner recipes. Show recipe name, servings, prep/cook time, ingredients with quantities, and clear step-by-step instructions. Persist today's selected dinner by local date so it remains visible when reopened; allow spinning again with no immediate repeat. Include favorites persisted locally, a favorites view, and simple filters for vegetarian meals and maximum total cooking time. Clearly show when no recipes match filters. Use an inviting, responsive food-themed interface with accessible controls and readable recipe cards. Work without external API keys or network dependencies. Do not invent photos or rely on remote images.\n\nStart with: Deliver at least 30 varied dinners with consistent quantities, servings, timings, dietary labels, and tested instruction completeness.",
+  "permissions": [],
+  "files": [
+    "index.html",
+    "styles.css",
+    "app.js",
+    "src/App.vue",
+    "src/components/AppIcon.vue",
+    "src/components/DinnerPicker.vue",
+    "src/components/FavoritesList.vue",
+    "src/components/FilterPanel.vue",
+    "src/components/RecipeCard.vue",
+    "src/composables/useDinner.ts",
+    "src/composables/useRecipeView.ts",
+    "src/types/recipe.ts",
+    "src/utility/dates.ts",
+    "src/utility/persistence.ts",
+    "src/utility/recipeNavigation.ts",
+    "src/utility/recipes.ts",
+    "src/utility/recipeValidation.ts",
+    "src/utility/selection.ts",
+    "src/utility/storage.ts",
+    "tests.js",
+    "settings.json"
+  ],
+  "updatedAt": "2026-10-13T18:30:09.045Z"
+}
