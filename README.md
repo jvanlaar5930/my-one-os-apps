@@ -3,7 +3,7 @@
 Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan (`plan.md`) and a self-contained `index.html`.
 
 <!-- one_OS:apps -->
-## Apps (55)
+## Apps (45)
 
 | | App |
 | --- | --- |
@@ -29,16 +29,6 @@ Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan 
 | 📈 | [Dow Ticker](apps/plan-qt682pkmqtz4yy7/README.md) |
 | 💭 | [Dream Diary](apps/plan-3bvz2comsw5r2bw/README.md) |
 | <img src="https://cdn.polyhaven.com/asset_img/thumbs/aerial_beach_03.png?height=200" width="24" height="24" alt=""> | [ECHO PATHS](apps/ae4f5b6fcd8bf3b3/README.md) |
-| 📋 | [FlowBoard](apps/plan-v6suk4jmta7mse4/README.md) |
-| 📋 | [Kanban Board](apps/plan-iz25hwymr6ufvta/README.md) |
-| 📋 | [Kanban Pro](apps/73ec5a47909bdb26/README.md) |
-| 🔧 | [Kanban Pro](apps/plan-f638m2jmr8nropt/README.md) |
-| 📋 | [Kanban Pro](apps/plan-qkttpr4mr6ypccw/README.md) |
-| 📋 | [Kanban Pro](apps/plan-yfapbqvmr8n8npi/README.md) |
-| 📋 | [KanbanTeam Pro](apps/plan-wgi85ipmr855zjl/README.md) |
-| 🧩 | [New App](apps/plan-3xflwylmulk5okj/README.md) |
-| 🧩 | [New App](apps/plan-pj5rpummqphnf9f/README.md) |
-| 🧩 | [New App](apps/plan-zkd8luhmt64ah27/README.md) |
 | 📝 | [Notes](apps/b1dc53040015a823/README.md) |
 | 🗺️ | [PA Map Explorer](apps/plan-cpnugipmqu3m9x6/README.md) |
 | 🎨 | [Paint](apps/18871a62bc606ddd/README.md) |
@@ -63,7 +53,7 @@ Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan 
 | 🌦️ | [Weather Radar](apps/plan-n3wd4oemqshvzlw/README.md) |
 | 🌤️ | [Weather Station](apps/plan-t5e4pemmun2u2xa/README.md) |
 
-_55 app(s) · last updated 2026-10-14 by one_OS._
+_45 app(s) · last updated 2026-10-14 by one_OS._
 <!-- /one_OS:apps -->
 
 <!-- one_OS:blocks -->
