@@ -57,7 +57,7 @@ _45 app(s) · last updated 2026-10-14 by one_OS._
 <!-- /one_OS:apps -->
 
 <!-- one_OS:blocks -->
-## Blocks (12)
+## Blocks (13)
 
 | Block | Version |
 | --- | --- |
@@ -65,6 +65,7 @@ _45 app(s) · last updated 2026-10-14 by one_OS._
 | [List](blocks/builtin/list/README.md) | Built-in |
 | [Form](blocks/builtin/form/README.md) | Built-in |
 | [Button](blocks/builtin/button/README.md) | Built-in |
+| [Button group](blocks/builtin/button_group/README.md) | Built-in |
 | [Chart](blocks/builtin/chart/README.md) | Built-in |
 | [Calendar](blocks/builtin/calendar/README.md) | Built-in |
 | [Totals](blocks/builtin/totals/README.md) | Built-in |

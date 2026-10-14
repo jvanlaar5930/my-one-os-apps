@@ -1,0 +1,52 @@
+{
+  "key": "button_group",
+  "label": "Button group",
+  "summary": "Multiple buttons arranged side by side or stacked, each with its own actions.",
+  "options": {
+    "layout": {
+      "kind": "oneOf",
+      "values": [
+        "side_by_side",
+        "stacked"
+      ],
+      "required": true
+    },
+    "buttons": {
+      "kind": "array",
+      "min": 1,
+      "max": 12,
+      "required": true,
+      "options": {
+        "label": {
+          "kind": "text",
+          "max": 40,
+          "required": true
+        },
+        "action": {
+          "kind": "action",
+          "required": true
+        }
+      }
+    }
+  },
+  "example": {
+    "block": "button_group",
+    "layout": "side_by_side",
+    "buttons": [
+      {
+        "label": "First button",
+        "action": {
+          "do": "open",
+          "screen": "home"
+        }
+      },
+      {
+        "label": "Second button",
+        "action": {
+          "do": "open",
+          "screen": "home"
+        }
+      }
+    ]
+  }
+}
