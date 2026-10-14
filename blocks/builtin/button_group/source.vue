@@ -34,6 +34,7 @@ const buttons = computed(() => Array.isArray(props.options.buttons) ? props.opti
 
 <style scoped>
 .button-group { display: flex; flex-wrap: wrap; gap: calc(var(--d-space) / 2); justify-content: var(--d-button-align, flex-start); }
-.button-group > * { min-width: 0; max-width: 100%; width: var(--d-button-width, auto); }
+.button-group > * { min-width: 0; max-width: 100%; }
 .button-group.stacked { flex-direction: column; align-items: var(--d-button-align, flex-start); }
+.button-group.stacked > * { width: var(--d-button-width, auto); }
 </style>
