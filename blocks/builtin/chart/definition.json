@@ -1,0 +1,58 @@
+{
+  "key": "chart",
+  "label": "Chart",
+  "summary": "Record counts or sums per day, week or month.",
+  "options": {
+    "of": {
+      "kind": "collection",
+      "required": true
+    },
+    "date": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "date"
+      ],
+      "required": true
+    },
+    "sum": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "number"
+      ]
+    },
+    "by": {
+      "kind": "oneOf",
+      "values": [
+        "day",
+        "week",
+        "month"
+      ],
+      "required": true
+    },
+    "last": {
+      "kind": "number",
+      "min": 1,
+      "max": 120,
+      "integer": true,
+      "required": true
+    },
+    "prefix": {
+      "kind": "value"
+    }
+  },
+  "example": {
+    "block": "chart",
+    "of": "checkins",
+    "date": "day",
+    "by": "day",
+    "last": 30
+  }
+}

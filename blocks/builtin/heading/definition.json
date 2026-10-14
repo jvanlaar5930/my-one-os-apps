@@ -1,0 +1,21 @@
+{
+  "key": "heading",
+  "label": "Heading",
+  "summary": "The screen record's field, or fixed text, as a title.",
+  "options": {
+    "field": {
+      "kind": "field",
+      "in": {
+        "from": "screenRecord"
+      }
+    },
+    "text": {
+      "kind": "text",
+      "max": 80
+    }
+  },
+  "example": {
+    "block": "heading",
+    "text": "Welcome"
+  }
+}

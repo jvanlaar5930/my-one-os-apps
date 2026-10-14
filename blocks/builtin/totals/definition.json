@@ -1,0 +1,62 @@
+{
+  "key": "totals",
+  "label": "Totals",
+  "summary": "Record counts or sums, optionally by category and current week or month.",
+  "options": {
+    "of": {
+      "kind": "collection",
+      "required": true
+    },
+    "sum": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "number"
+      ]
+    },
+    "by": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "choice"
+      ]
+    },
+    "period": {
+      "kind": "group",
+      "options": {
+        "date": {
+          "kind": "field",
+          "in": {
+            "from": "parent",
+            "name": "of"
+          },
+          "types": [
+            "date"
+          ],
+          "required": true
+        },
+        "per": {
+          "kind": "oneOf",
+          "values": [
+            "week",
+            "month"
+          ],
+          "required": true
+        }
+      }
+    },
+    "prefix": {
+      "kind": "value"
+    }
+  },
+  "example": {
+    "block": "totals",
+    "of": "items"
+  }
+}

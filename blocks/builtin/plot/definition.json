@@ -1,0 +1,92 @@
+{
+  "key": "plot",
+  "label": "Plot",
+  "summary": "Compare numeric series as line, grouped bar or area charts.",
+  "options": {
+    "of": {
+      "kind": "collection",
+      "required": true
+    },
+    "x": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "date",
+        "text",
+        "choice"
+      ],
+      "required": true
+    },
+    "y": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "number"
+      ],
+      "required": true
+    },
+    "series": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "text",
+        "choice"
+      ]
+    },
+    "type": {
+      "kind": "oneOf",
+      "values": [
+        "line",
+        "bar",
+        "area"
+      ],
+      "required": true
+    },
+    "title": {
+      "kind": "text",
+      "max": 120
+    },
+    "unit": {
+      "kind": "text",
+      "max": 20
+    },
+    "aggregate": {
+      "kind": "oneOf",
+      "values": [
+        "sum",
+        "mean",
+        "min",
+        "max"
+      ]
+    },
+    "limit": {
+      "kind": "number",
+      "min": 1,
+      "max": 120,
+      "integer": true
+    },
+    "filter": {
+      "kind": "filter",
+      "in": {
+        "from": "option",
+        "name": "of"
+      }
+    }
+  },
+  "example": {
+    "block": "plot",
+    "of": "habits",
+    "x": "name",
+    "y": "goal",
+    "type": "bar"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "key": "search_select",
+  "label": "Search and select",
+  "summary": "Live autocomplete from a declared source; copies selected result fields into saved records.",
+  "options": {
+    "source": {
+      "kind": "source",
+      "required": true
+    },
+    "results": {
+      "kind": "collection",
+      "required": true
+    },
+    "query_param": {
+      "kind": "text",
+      "max": 40,
+      "required": true
+    },
+    "title": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "results"
+      },
+      "types": [
+        "text",
+        "longText",
+        "choice"
+      ],
+      "required": true
+    },
+    "subtitle": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "results"
+      }
+    },
+    "to": {
+      "kind": "collection",
+      "required": true
+    },
+    "copy": {
+      "kind": "fieldMap",
+      "in": {
+        "from": "option",
+        "name": "results"
+      },
+      "required": true
+    },
+    "label": {
+      "kind": "text",
+      "max": 80
+    },
+    "min_chars": {
+      "kind": "number",
+      "min": 2,
+      "max": 10,
+      "integer": true
+    },
+    "limit": {
+      "kind": "number",
+      "min": 1,
+      "max": 25,
+      "integer": true
+    },
+    "then": {
+      "kind": "screen",
+      "passes": {
+        "from": "item",
+        "of": {
+          "from": "option",
+          "name": "to"
+        }
+      }
+    }
+  },
+  "example": {
+    "block": "search_select",
+    "source": "lookup",
+    "results": "items",
+    "query_param": "name",
+    "title": "name",
+    "to": "saved",
+    "copy": {
+      "name": "name"
+    }
+  }
+}

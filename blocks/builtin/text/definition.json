@@ -1,0 +1,21 @@
+{
+  "key": "text",
+  "label": "Text",
+  "summary": "Readable body text or a record field, preserving paragraphs without HTML.",
+  "options": {
+    "text": {
+      "kind": "text",
+      "max": 2000
+    },
+    "field": {
+      "kind": "field",
+      "in": {
+        "from": "screenRecord"
+      }
+    }
+  },
+  "example": {
+    "block": "text",
+    "text": "Add a record to get started."
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "key": "table",
+  "label": "Table",
+  "summary": "Searchable collection columns with field labels, formatting and optional record navigation.",
+  "options": {
+    "of": {
+      "kind": "collection",
+      "required": true
+    },
+    "columns": {
+      "kind": "fields",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "required": true
+    },
+    "title": {
+      "kind": "text",
+      "max": 80
+    },
+    "search": {
+      "kind": "fields",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "text",
+        "longText"
+      ]
+    },
+    "filter": {
+      "kind": "filter",
+      "in": {
+        "from": "option",
+        "name": "of"
+      }
+    },
+    "sort": {
+      "kind": "group",
+      "options": {
+        "by": {
+          "kind": "field",
+          "in": {
+            "from": "parent",
+            "name": "of"
+          },
+          "required": true
+        },
+        "dir": {
+          "kind": "oneOf",
+          "values": [
+            "asc",
+            "desc"
+          ]
+        }
+      }
+    },
+    "open": {
+      "kind": "screen",
+      "passes": {
+        "from": "item",
+        "of": {
+          "from": "option",
+          "name": "of"
+        }
+      }
+    },
+    "limit": {
+      "kind": "number",
+      "min": 1,
+      "max": 500,
+      "integer": true
+    }
+  },
+  "example": {
+    "block": "table",
+    "of": "items",
+    "columns": [
+      "name"
+    ]
+  }
+}

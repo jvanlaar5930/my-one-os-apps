@@ -1,0 +1,24 @@
+{
+  "key": "button",
+  "label": "Button",
+  "summary": "Runs an action or a sequence of actions.",
+  "options": {
+    "label": {
+      "kind": "text",
+      "max": 40,
+      "required": true
+    },
+    "action": {
+      "kind": "action",
+      "required": true
+    }
+  },
+  "example": {
+    "block": "button",
+    "label": "Go",
+    "action": {
+      "do": "open",
+      "screen": "home"
+    }
+  }
+}

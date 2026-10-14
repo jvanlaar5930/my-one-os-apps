@@ -1,0 +1,34 @@
+{
+  "key": "calendar",
+  "label": "Calendar",
+  "summary": "A month view marking dates with records.",
+  "options": {
+    "of": {
+      "kind": "collection",
+      "required": true
+    },
+    "date": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "date"
+      ],
+      "required": true
+    },
+    "filter": {
+      "kind": "filter",
+      "in": {
+        "from": "option",
+        "name": "of"
+      }
+    }
+  },
+  "example": {
+    "block": "calendar",
+    "of": "checkins",
+    "date": "day"
+  }
+}

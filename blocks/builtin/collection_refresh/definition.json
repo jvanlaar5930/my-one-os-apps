@@ -1,0 +1,42 @@
+{
+  "key": "collection_refresh",
+  "label": "Refresh saved items",
+  "summary": "Refreshes a scoped source for each saved record using field-to-parameter bindings, with progress and honest errors.",
+  "options": {
+    "of": {
+      "kind": "collection",
+      "required": true
+    },
+    "source": {
+      "kind": "source",
+      "required": true
+    },
+    "params": {
+      "kind": "fieldMap",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "required": true
+    },
+    "filter": {
+      "kind": "filter",
+      "in": {
+        "from": "option",
+        "name": "of"
+      }
+    },
+    "label": {
+      "kind": "text",
+      "max": 80
+    }
+  },
+  "example": {
+    "block": "collection_refresh",
+    "of": "saved",
+    "source": "details",
+    "params": {
+      "name": "name"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "key": "form",
+  "label": "Form",
+  "summary": "Adds a record, or edits the screen's record if it has one.",
+  "options": {
+    "of": {
+      "kind": "collection",
+      "required": true
+    },
+    "fields": {
+      "kind": "fields",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "allowEmpty": true
+    },
+    "then": {
+      "kind": "screen",
+      "passes": {
+        "from": "none"
+      }
+    }
+  },
+  "example": {
+    "block": "form",
+    "of": "items"
+  }
+}

@@ -65,3 +65,22 @@ Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan 
 
 _55 app(s) Â· last updated 2026-10-13 by one_OS._
 <!-- /one_OS:apps -->
+
+<!-- one_OS:blocks -->
+## Blocks (12)
+
+| Block | Version |
+| --- | --- |
+| [Heading](blocks/builtin/heading/README.md) | Built-in |
+| [List](blocks/builtin/list/README.md) | Built-in |
+| [Form](blocks/builtin/form/README.md) | Built-in |
+| [Button](blocks/builtin/button/README.md) | Built-in |
+| [Chart](blocks/builtin/chart/README.md) | Built-in |
+| [Calendar](blocks/builtin/calendar/README.md) | Built-in |
+| [Totals](blocks/builtin/totals/README.md) | Built-in |
+| [Plot](blocks/builtin/plot/README.md) | Built-in |
+| [Text](blocks/builtin/text/README.md) | Built-in |
+| [Table](blocks/builtin/table/README.md) | Built-in |
+| [Search and select](blocks/builtin/search_select/README.md) | Built-in |
+| [Refresh saved items](blocks/builtin/collection_refresh/README.md) | Built-in |
+<!-- /one_OS:blocks -->

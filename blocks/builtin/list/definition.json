@@ -1,0 +1,140 @@
+{
+  "key": "list",
+  "label": "List",
+  "summary": "Records of a collection, with optional weekly progress.",
+  "options": {
+    "of": {
+      "kind": "collection",
+      "required": true
+    },
+    "title": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "text"
+      ],
+      "required": true
+    },
+    "subtitle": {
+      "kind": "field",
+      "in": {
+        "from": "option",
+        "name": "of"
+      }
+    },
+    "filter": {
+      "kind": "filter",
+      "in": {
+        "from": "option",
+        "name": "of"
+      }
+    },
+    "sort": {
+      "kind": "group",
+      "options": {
+        "by": {
+          "kind": "field",
+          "in": {
+            "from": "parent",
+            "name": "of"
+          },
+          "required": true
+        },
+        "dir": {
+          "kind": "oneOf",
+          "values": [
+            "asc",
+            "desc"
+          ]
+        }
+      }
+    },
+    "search": {
+      "kind": "fields",
+      "in": {
+        "from": "option",
+        "name": "of"
+      },
+      "types": [
+        "text",
+        "longText"
+      ]
+    },
+    "prefix": {
+      "kind": "value"
+    },
+    "open": {
+      "kind": "screen",
+      "passes": {
+        "from": "item",
+        "of": {
+          "from": "option",
+          "name": "of"
+        }
+      }
+    },
+    "add": {
+      "kind": "screen",
+      "passes": {
+        "from": "none"
+      }
+    },
+    "progress": {
+      "kind": "group",
+      "options": {
+        "of": {
+          "kind": "collection",
+          "required": true
+        },
+        "ref": {
+          "kind": "field",
+          "in": {
+            "from": "option",
+            "name": "of"
+          },
+          "types": [
+            "ref"
+          ],
+          "required": true
+        },
+        "date": {
+          "kind": "field",
+          "in": {
+            "from": "option",
+            "name": "of"
+          },
+          "types": [
+            "date"
+          ],
+          "required": true
+        },
+        "per": {
+          "kind": "oneOf",
+          "values": [
+            "week"
+          ],
+          "required": true
+        },
+        "target": {
+          "kind": "field",
+          "in": {
+            "from": "parent",
+            "name": "of"
+          },
+          "types": [
+            "number"
+          ],
+          "required": true
+        }
+      }
+    }
+  },
+  "example": {
+    "block": "list",
+    "of": "items",
+    "title": "name"
+  }
+}
