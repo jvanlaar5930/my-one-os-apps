@@ -3,7 +3,7 @@
 Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan (`plan.md`) and a self-contained `index.html`.
 
 <!-- one_OS:apps -->
-## Apps (47)
+## Apps (48)
 
 | | App |
 | --- | --- |
@@ -29,6 +29,7 @@ Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan 
 | 📈 | [Dow Ticker](apps/plan-qt682pkmqtz4yy7/README.md) |
 | 💭 | [Dream Diary](apps/plan-3bvz2comsw5r2bw/README.md) |
 | <img src="https://cdn.polyhaven.com/asset_img/thumbs/aerial_beach_03.png?height=200" width="24" height="24" alt=""> | [ECHO PATHS](apps/ae4f5b6fcd8bf3b3/README.md) |
+| ✅ | [Habit Tracker](apps/2e84e1e796acb8f5/README.md) |
 | 🍽️ | [Meal Logger](apps/0c901a8b54cdc70a/README.md) |
 | 📝 | [Notes](apps/b1dc53040015a823/README.md) |
 | 🗺️ | [PA Map Explorer](apps/plan-cpnugipmqu3m9x6/README.md) |
@@ -55,7 +56,7 @@ Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan 
 | 🌦️ | [Weather Radar](apps/plan-n3wd4oemqshvzlw/README.md) |
 | 🌤️ | [Weather Station](apps/plan-t5e4pemmun2u2xa/README.md) |
 
-_47 app(s) · last updated 2026-10-15 by one_OS._
+_48 app(s) · last updated 2026-10-15 by one_OS._
 <!-- /one_OS:apps -->
 
 <!-- one_OS:blocks -->
