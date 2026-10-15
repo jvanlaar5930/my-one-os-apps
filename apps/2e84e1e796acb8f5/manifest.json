@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "kind": "described",
+  "contentId": "2e84e1e796acb8f5",
+  "slug": "2e84e1e796acb8f5",
+  "name": "Habit Tracker",
+  "icon": "✅",
+  "prompt": "",
+  "permissions": [],
+  "files": [
+    "description.json"
+  ],
+  "blockDependencies": [],
+  "updatedAt": "2026-10-15T16:39:43.036Z"
+}

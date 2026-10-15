@@ -1,0 +1,128 @@
+{
+  "format": "oneos.app/1",
+  "name": "Habit Tracker",
+  "icon": "✅",
+  "data": {
+    "habits": {
+      "fields": {
+        "name": {
+          "type": "text",
+          "required": true
+        },
+        "goal": {
+          "type": "number",
+          "label": "Times per week",
+          "required": true,
+          "min": 1,
+          "max": 7,
+          "decimals": 0
+        }
+      }
+    },
+    "checkins": {
+      "fields": {
+        "habit": {
+          "type": "ref",
+          "required": true,
+          "ref": "habits"
+        },
+        "day": {
+          "type": "date",
+          "required": true
+        }
+      },
+      "unique": [
+        {
+          "fields": [
+            "habit",
+            "day"
+          ],
+          "message": "Already done today"
+        }
+      ]
+    }
+  },
+  "screens": {
+    "home": {
+      "blocks": [
+        {
+          "block": "list",
+          "of": "habits",
+          "title": "name",
+          "open": "habit",
+          "add": "new_habit",
+          "progress": {
+            "of": "checkins",
+            "ref": "habit",
+            "date": "day",
+            "per": "week",
+            "target": "goal"
+          }
+        },
+        {
+          "block": "chart",
+          "of": "checkins",
+          "date": "day",
+          "by": "day",
+          "last": 30
+        }
+      ],
+      "title": "Habits"
+    },
+    "new_habit": {
+      "blocks": [
+        {
+          "block": "form",
+          "of": "habits",
+          "then": "home"
+        }
+      ],
+      "title": "New habit"
+    },
+    "habit": {
+      "blocks": [
+        {
+          "block": "heading",
+          "field": "name"
+        },
+        {
+          "block": "button",
+          "label": "Done today",
+          "action": {
+            "do": "add",
+            "to": "checkins",
+            "set": {
+              "habit": {
+                "$": "record"
+              },
+              "day": {
+                "$": "today"
+              }
+            }
+          }
+        },
+        {
+          "block": "calendar",
+          "of": "checkins",
+          "date": "day",
+          "filter": {
+            "habit": {
+              "$": "record"
+            }
+          }
+        },
+        {
+          "block": "button",
+          "label": "Delete habit",
+          "action": {
+            "do": "remove",
+            "confirm": "Delete this habit?"
+          }
+        }
+      ],
+      "record": "habits"
+    }
+  },
+  "start": "home",
+  "theme": "studio"
+}
