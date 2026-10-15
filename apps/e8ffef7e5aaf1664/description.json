@@ -45,6 +45,23 @@
     "home": {
       "blocks": [
         {
+          "block": "button_group",
+          "layout": "side_by_side",
+          "buttons": [
+            {
+              "label": "->",
+              "action": {
+                "do": "open",
+                "screen": "stored_values"
+              }
+            }
+          ],
+          "appearance": {
+            "blockAlign": "right",
+            "align": "right"
+          }
+        },
+        {
           "block": "heading",
           "text": "New York · London · Tokyo",
           "appearance": {
@@ -114,6 +131,24 @@
         }
       ],
       "title": "Seven-day city comparison"
+    },
+    "stored_values": {
+      "blocks": [
+        {
+          "block": "button",
+          "label": "<-",
+          "action": {
+            "do": "open",
+            "screen": "home"
+          }
+        },
+        {
+          "block": "list",
+          "of": "forecasts",
+          "title": "city"
+        }
+      ],
+      "title": "Stored Values"
     }
   },
   "start": "home",
