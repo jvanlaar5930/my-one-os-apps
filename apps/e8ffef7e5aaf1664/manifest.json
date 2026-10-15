@@ -1,0 +1,17 @@
+{
+  "oneOS": true,
+  "kind": "described",
+  "contentId": "e8ffef7e5aaf1664",
+  "slug": "e8ffef7e5aaf1664",
+  "name": "Weather Comparison",
+  "icon": "🌦️",
+  "prompt": "",
+  "permissions": [
+    "network:api.open-meteo.com"
+  ],
+  "files": [
+    "description.json"
+  ],
+  "blockDependencies": [],
+  "updatedAt": "2026-10-15T14:56:56.435Z"
+}

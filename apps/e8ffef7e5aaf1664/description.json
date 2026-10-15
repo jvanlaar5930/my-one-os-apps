@@ -1,0 +1,212 @@
+{
+  "format": "oneos.app/1",
+  "name": "Weather Comparison",
+  "icon": "🌦️",
+  "data": {
+    "forecasts": {
+      "fields": {
+        "city": {
+          "type": "text",
+          "required": true
+        },
+        "day": {
+          "type": "date",
+          "required": true
+        },
+        "temperature": {
+          "type": "number",
+          "label": "Daily high (°C)",
+          "decimals": 1
+        },
+        "rain": {
+          "type": "number",
+          "label": "Rain (mm)",
+          "min": 0,
+          "decimals": 1
+        },
+        "wind": {
+          "type": "number",
+          "label": "Maximum wind (km/h)",
+          "min": 0,
+          "decimals": 1
+        }
+      },
+      "unique": [
+        {
+          "fields": [
+            "city",
+            "day"
+          ]
+        }
+      ]
+    }
+  },
+  "screens": {
+    "home": {
+      "blocks": [
+        {
+          "block": "heading",
+          "text": "New York · London · Tokyo",
+          "appearance": {
+            "fontWeight": "bold",
+            "fontSize": 26,
+            "align": "center",
+            "textColor": "muted"
+          }
+        },
+        {
+          "block": "button",
+          "label": "Refresh forecasts",
+          "action": [
+            {
+              "do": "refresh",
+              "source": "new_york"
+            },
+            {
+              "do": "refresh",
+              "source": "london"
+            },
+            {
+              "do": "refresh",
+              "source": "tokyo"
+            }
+          ]
+        },
+        {
+          "block": "plot",
+          "of": "forecasts",
+          "x": "day",
+          "y": "temperature",
+          "series": "city",
+          "type": "line",
+          "title": "Daily high temperature",
+          "unit": "°C",
+          "aggregate": "max",
+          "limit": 14
+        },
+        {
+          "block": "plot",
+          "of": "forecasts",
+          "x": "day",
+          "y": "rain",
+          "series": "city",
+          "type": "bar",
+          "title": "Daily rainfall",
+          "unit": "mm",
+          "aggregate": "sum",
+          "limit": 14
+        },
+        {
+          "block": "plot",
+          "of": "forecasts",
+          "x": "day",
+          "y": "wind",
+          "series": "city",
+          "type": "area",
+          "title": "Maximum wind speed",
+          "unit": "km/h",
+          "aggregate": "max",
+          "limit": 14
+        },
+        {
+          "block": "heading",
+          "text": "Forecasts: Open-Meteo · CC BY 4.0 · open-meteo.com"
+        }
+      ],
+      "title": "Seven-day city comparison"
+    }
+  },
+  "start": "home",
+  "sources": {
+    "new_york": {
+      "label": "New York · Open-Meteo",
+      "to": "forecasts",
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.0060&daily=temperature_2m_max,rain_sum,wind_speed_10m_max&timezone=auto&forecast_days=7",
+      "layout": "columns",
+      "items": "daily",
+      "map": {
+        "city": {
+          "value": "New York"
+        },
+        "day": {
+          "path": "time"
+        },
+        "temperature": {
+          "path": "temperature_2m_max"
+        },
+        "rain": {
+          "path": "rain_sum"
+        },
+        "wind": {
+          "path": "wind_speed_10m_max"
+        }
+      },
+      "attribution": {
+        "label": "Weather data by Open-Meteo",
+        "url": "https://open-meteo.com/",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "note": "Values mapped and rounded to one decimal for these charts."
+      }
+    },
+    "london": {
+      "label": "London · Open-Meteo",
+      "to": "forecasts",
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=51.5074&longitude=-0.1278&daily=temperature_2m_max,rain_sum,wind_speed_10m_max&timezone=auto&forecast_days=7",
+      "layout": "columns",
+      "items": "daily",
+      "map": {
+        "city": {
+          "value": "London"
+        },
+        "day": {
+          "path": "time"
+        },
+        "temperature": {
+          "path": "temperature_2m_max"
+        },
+        "rain": {
+          "path": "rain_sum"
+        },
+        "wind": {
+          "path": "wind_speed_10m_max"
+        }
+      },
+      "attribution": {
+        "label": "Weather data by Open-Meteo",
+        "url": "https://open-meteo.com/",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "note": "Values mapped and rounded to one decimal for these charts."
+      }
+    },
+    "tokyo": {
+      "label": "Tokyo · Open-Meteo",
+      "to": "forecasts",
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=35.6762&longitude=139.6503&daily=temperature_2m_max,rain_sum,wind_speed_10m_max&timezone=auto&forecast_days=7",
+      "layout": "columns",
+      "items": "daily",
+      "map": {
+        "city": {
+          "value": "Tokyo"
+        },
+        "day": {
+          "path": "time"
+        },
+        "temperature": {
+          "path": "temperature_2m_max"
+        },
+        "rain": {
+          "path": "rain_sum"
+        },
+        "wind": {
+          "path": "wind_speed_10m_max"
+        }
+      },
+      "attribution": {
+        "label": "Weather data by Open-Meteo",
+        "url": "https://open-meteo.com/",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "note": "Values mapped and rounded to one decimal for these charts."
+      }
+    }
+  }
+}
