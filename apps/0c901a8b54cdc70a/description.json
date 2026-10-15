@@ -1,0 +1,185 @@
+{
+  "format": "oneos.app/1",
+  "name": "Meal Logger",
+  "icon": "🍽️",
+  "data": {
+    "meals": {
+      "fields": {
+        "name": {
+          "type": "text",
+          "label": "Food Name"
+        },
+        "calories": {
+          "type": "number",
+          "label": "Calories"
+        },
+        "notes": {
+          "type": "longText",
+          "label": "Notes"
+        },
+        "meal_type": {
+          "type": "choice",
+          "label": "Meal Type",
+          "options": [
+            "Breakfast",
+            "Lunch",
+            "Dinner"
+          ]
+        },
+        "date": {
+          "type": "date",
+          "label": "Date"
+        }
+      }
+    }
+  },
+  "screens": {
+    "home": {
+      "blocks": [
+        {
+          "block": "heading",
+          "text": "Today's Summary",
+          "appearance": {
+            "blockWidth": "full",
+            "blockAlign": "right",
+            "align": "right"
+          }
+        },
+        {
+          "block": "totals",
+          "of": "meals",
+          "sum": "calories",
+          "by": "meal_type",
+          "period": {
+            "date": "date",
+            "per": "week"
+          },
+          "prefix": "",
+          "appearance": {
+            "blockWidth": "half",
+            "blockAlign": "center"
+          }
+        },
+        {
+          "block": "button_group",
+          "layout": "side_by_side",
+          "buttons": [
+            {
+              "label": "+ Dinner",
+              "action": {
+                "do": "open",
+                "screen": "add_dinner"
+              }
+            },
+            {
+              "label": "+ Lunch",
+              "action": {
+                "do": "open",
+                "screen": "add_lunch"
+              }
+            },
+            {
+              "label": "+ Breakfast",
+              "action": {
+                "do": "open",
+                "screen": "add_breakfast"
+              }
+            }
+          ],
+          "appearance": {
+            "blockAlign": "center",
+            "align": "right",
+            "blockWidth": "third",
+            "padding": "large"
+          }
+        },
+        {
+          "block": "button_group",
+          "layout": "side_by_side",
+          "buttons": [
+            {
+              "label": "View History",
+              "action": {
+                "do": "open",
+                "screen": "history"
+              }
+            }
+          ],
+          "appearance": {
+            "align": "right"
+          }
+        }
+      ],
+      "title": "Meal Logger"
+    },
+    "add_breakfast": {
+      "blocks": [
+        {
+          "block": "form",
+          "of": "meals",
+          "fields": [
+            "name",
+            "calories",
+            "notes"
+          ],
+          "then": "home"
+        }
+      ],
+      "title": "Log Breakfast"
+    },
+    "add_lunch": {
+      "blocks": [
+        {
+          "block": "form",
+          "of": "meals",
+          "fields": [
+            "name",
+            "calories",
+            "notes"
+          ],
+          "then": "home"
+        }
+      ],
+      "title": "Log Lunch"
+    },
+    "add_dinner": {
+      "blocks": [
+        {
+          "block": "form",
+          "of": "meals",
+          "fields": [
+            "name",
+            "calories",
+            "notes"
+          ],
+          "then": "home"
+        }
+      ],
+      "title": "Log Dinner"
+    },
+    "history": {
+      "blocks": [
+        {
+          "block": "table",
+          "of": "meals",
+          "columns": [
+            "date",
+            "meal_type",
+            "name",
+            "calories",
+            "notes"
+          ],
+          "sort": {
+            "by": "date",
+            "dir": "desc"
+          },
+          "open": "add_breakfast",
+          "limit": 100
+        }
+      ],
+      "title": "Meal History"
+    }
+  },
+  "start": "home",
+  "theme": "bloom"
+}

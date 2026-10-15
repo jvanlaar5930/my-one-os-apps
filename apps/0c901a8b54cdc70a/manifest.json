@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "kind": "described",
+  "contentId": "0c901a8b54cdc70a",
+  "slug": "0c901a8b54cdc70a",
+  "name": "Meal Logger",
+  "icon": "🍽️",
+  "prompt": "",
+  "permissions": [],
+  "files": [
+    "description.json"
+  ],
+  "blockDependencies": [],
+  "updatedAt": "2026-10-15T16:27:25.323Z"
+}

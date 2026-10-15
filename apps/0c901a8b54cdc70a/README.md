@@ -1,0 +1,13 @@
+# 🍽️ Meal Logger
+
+_No description recorded._
+
+## Documentation
+
+- [Build plan](plan.md)
+- [Change history](CHANGELOG.md)
+- [App manifest](manifest.json)
+
+Built with **one_OS**. Install this app from this repository using the one_OS App Store.
+
+[App description](description.json) · Runs natively in OneOS. Personal records and saved settings are not included.
