@@ -1,0 +1,15 @@
+{
+  "oneOS": true,
+  "kind": "described",
+  "contentId": "f9cfd2e30b5642d6",
+  "slug": "f9cfd2e30b5642d6",
+  "name": "Expense Log",
+  "icon": "💸",
+  "prompt": "",
+  "permissions": [],
+  "files": [
+    "description.json"
+  ],
+  "blockDependencies": [],
+  "updatedAt": "2026-10-15T16:39:49.931Z"
+}

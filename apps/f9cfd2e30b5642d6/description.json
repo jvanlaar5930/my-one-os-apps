@@ -1,0 +1,139 @@
+{
+  "format": "oneos.app/1",
+  "name": "Expense Log",
+  "icon": "💸",
+  "data": {
+    "expenses": {
+      "fields": {
+        "description": {
+          "type": "text",
+          "label": "Description",
+          "required": true
+        },
+        "amount": {
+          "type": "number",
+          "label": "Amount",
+          "required": true,
+          "min": 0,
+          "decimals": 2
+        },
+        "category": {
+          "type": "choice",
+          "label": "Category",
+          "required": true,
+          "options": [
+            "Food",
+            "Transport",
+            "Home",
+            "Health",
+            "Fun",
+            "Other"
+          ]
+        },
+        "day": {
+          "type": "date",
+          "label": "Date",
+          "required": true
+        }
+      }
+    }
+  },
+  "screens": {
+    "home": {
+      "blocks": [
+        {
+          "block": "heading",
+          "text": "This month"
+        },
+        {
+          "block": "totals",
+          "of": "expenses",
+          "sum": "amount",
+          "by": "category",
+          "period": {
+            "date": "day",
+            "per": "month"
+          },
+          "prefix": {
+            "$": "setting",
+            "key": "currency"
+          }
+        },
+        {
+          "block": "chart",
+          "of": "expenses",
+          "date": "day",
+          "sum": "amount",
+          "by": "month",
+          "last": 6,
+          "prefix": {
+            "$": "setting",
+            "key": "currency"
+          }
+        },
+        {
+          "block": "list",
+          "of": "expenses",
+          "title": "description",
+          "subtitle": "amount",
+          "sort": {
+            "by": "day",
+            "dir": "desc"
+          },
+          "open": "expense",
+          "add": "new_expense",
+          "prefix": {
+            "$": "setting",
+            "key": "currency"
+          }
+        }
+      ],
+      "title": "Expenses"
+    },
+    "new_expense": {
+      "blocks": [
+        {
+          "block": "form",
+          "of": "expenses",
+          "then": "home"
+        }
+      ],
+      "title": "New expense"
+    },
+    "expense": {
+      "blocks": [
+        {
+          "block": "form",
+          "of": "expenses",
+          "then": "home"
+        },
+        {
+          "block": "button",
+          "label": "Delete expense",
+          "action": {
+            "do": "remove",
+            "confirm": "Delete this expense?"
+          }
+        }
+      ],
+      "title": "Edit expense",
+      "record": "expenses"
+    }
+  },
+  "start": "home",
+  "theme": "sleek",
+  "settings": [
+    {
+      "key": "currency",
+      "label": "Currency",
+      "type": "choice",
+      "default": "$",
+      "options": [
+        "$",
+        "€",
+        "£",
+        "¥"
+      ]
+    }
+  ]
+}
