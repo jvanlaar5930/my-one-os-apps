@@ -3,7 +3,7 @@
 Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan (`plan.md`) and a self-contained `index.html`.
 
 <!-- one_OS:apps -->
-## Apps (45)
+## Apps (46)
 
 | | App |
 | --- | --- |
@@ -50,10 +50,11 @@ Apps built with **one_OS** — each lives in `apps/<name>/` with its build plan 
 | 🔍 | [Tiny Check](apps/plan-jkbfq0tmt61ti58/README.md) |
 | 🗑️ | [Trash](apps/566d6ede2d448616/README.md) |
 | 📈 | [WealthFlow](apps/plan-u9vq5mcmrl0qqqy/README.md) |
+| 🌦️ | [Weather Comparison](apps/e8ffef7e5aaf1664/README.md) |
 | 🌦️ | [Weather Radar](apps/plan-n3wd4oemqshvzlw/README.md) |
 | 🌤️ | [Weather Station](apps/plan-t5e4pemmun2u2xa/README.md) |
 
-_45 app(s) · last updated 2026-10-14 by one_OS._
+_46 app(s) · last updated 2026-10-15 by one_OS._
 <!-- /one_OS:apps -->
 
 <!-- one_OS:blocks -->
